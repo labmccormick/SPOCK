@@ -282,7 +282,6 @@ OGA <-
       dfs <- vector(mode="list")
       dfs <-
         Filter(f = function(x) is(x, "data.frame"), mget(ls())) #create nested list of all dataframes
-      View(dfs)
     }
     #end reading in data
     ###################################################################
