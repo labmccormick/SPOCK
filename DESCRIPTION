@@ -1,0 +1,18 @@
+Package: SPOCK
+Title: Analysis yeast density over time to determine growth and survival data
+Version: 0.1
+Authors@R: c(person("Mark", "McCormick", email = "MMcCormick@salud.unm.edu",
+                  role = c("aut", "cre")),
+                person("Daniel","Felker",role="aut", 
+                  email = "danfelker@gmail.com"),
+                person("Eric","Small",role="aut",
+                  email = "emsmall@salud.unm.edu"))
+Maintainer: Mark McCormick <MMcCormick@salud.unm.edu>
+Description: SPOCK (Survival Percentage and Outgrowth Collection Kit) is a package of functions for the calculation of doubling time, survival percentage, and survival integral SPOCK utilizes data acquired from an incubated multi-plate reader to calculate metrics of aging and reproductive capacity of model yeast cells or other amenable biological systems. SPOCK filters raw data to remove noise, picks the exponential phase of growth, calculates doubling time, survival percental, survival integral, and provides the user with basic downstream statistical analysis. SPOCK also provides a tool to correct growth curves for the non-linear relationship between yeast cell number and optical density seen outside of the linear range of laboratory plate readers. Finally, SPOCK utilizes a Butterworth Filter to reduce the impact of noise before downstream analysis, which offers many advantages over prior packages.
+Depends: R (>= 3.1.0),
+ ggplot2,
+ pracma,
+ rsq,
+ signal
+License: GPL-3
+LazyData: true
