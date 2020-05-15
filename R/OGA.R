@@ -1,5 +1,5 @@
 #Function to create ladder, the output of this function is a 3rd order polynomial, which is the best fit of the data
-#This function expects to find a CSV of name ladder.csv in the current working directory, this should be a user generated file
+#This function expects to find a CSV of name ladder.csv (or user defined name) in the current working directory, this should be a user generated file
 #####################################################################################################
 ######################################################################################################
 ladderCreate <- function(laddername = "ladder.csv",
@@ -7,7 +7,7 @@ ladderCreate <- function(laddername = "ladder.csv",
 {
   library(pracma)
   pf <- data.frame()
-  highest<-vector() # this is the point past which the interpolator is no longer predictive, write this out for use later
+  highest<-vector() # this is the point past which the interpolator is extrapolative, write this out for use later
   ladderdf <-
     read.csv(laddername)#read in ladder file with name defined in function into ladderdf(ladder dataframe)
   measladdirect <-
@@ -48,6 +48,7 @@ ladderCreate <- function(laddername = "ladder.csv",
 
 create.plots<-function(locationofRAW=homedir)
 {
+  library(ggplot2)
   print(locationofRAW)
   print("Creating Plots")
   setwd(locationofRAW) #point function to directory containing raw output files from OGA function, these are used to plot
@@ -157,12 +158,13 @@ create.plots<-function(locationofRAW=homedir)
 #OGA calculates doubling times by subtracting blank wells, smoothing high frequency noise by a Butterworth filter,   
 #picking the second limit by defining the inflection point of exponential growth as determined by the 1st derivative (diff) ul,
 #and first limit by a heuristically defined slope change
-#the doubling time is the calculated between these points
+#the doubling time is then calculated between these points
 
 ##OGA arguments
 ################################# Input Management
 # autoinput=TRUE then automatically read in all .csv in working directory for OGA analysis
 # .csv are autoinputed into DFS, else OGA expects to find a nested DATAFRAME named dfs
+#nestdataframe is called if autoinput=FALSE, this is a nested DATAFRAME which is user created
 #homedir=getwd() directory which contains .csv files to be analzed, default is current WD
 
 ################################# Ladder specifications
@@ -172,8 +174,8 @@ create.plots<-function(locationofRAW=homedir)
 
 ################################# Handling of blanks
 #blank=TRUE tells OGA to expect to remove blanks
-#blankname=the name of blanks in .csv file (default is BLANK)
-### blank name is what's in the CSV to represent blanks, this is case sensitive
+#blankname=the name of blank wells in .csv file (default is BLANK)
+### blank name is what's in the CSV to represent blanks, this is CASE SENSITIVE
 
 ################################# Handling of plotting
 #create.plot=TRUE plots for all growth curves will be written out as .png
@@ -185,17 +187,21 @@ create.plots<-function(locationofRAW=homedir)
 #### by plotting the absolute value of fft transformed data you can visualize where the underlying noise is within the dataset ####
 
 ################################# Doubling time calculation arguments
-#measureInterval is the time between sampling times t (default is 15 minutes)
+#measureInterval is the time between sampling times t in minutes(default is 15 minutes)
 #fractionlowerlimit is the heuristically defined fractional value above which growth is defined as exponention
-#limitexp defines the end of where exponential growth would be expected in OD. this is used to eliminate wells 
+#maxinflectionpoint defines the end of where exponential growth would be expected in OD. this is used to eliminate wells 
 #with exponential growth following yeast growth phase (contaminates expected)
-#LimitNoGrowth limit below which a well is defined as having no growth (Highest O.D value- Average blank at all time points)
+#LimitNoGrowth limit below which a well is defined as having no growth, or insufficient data for analysis (Highest O.D value- Average blank at all time points)
 ####defined by slope at time n divided by slope at time 1 or tn/t1   ####
+
+################################# Handling of statistics
+#stats = TRUE the mean, SD, and SEM of each sample with same name will be calculated
 
 #####################################################################################################
 
 OGA <-
   function(autoinput = TRUE,
+           nestdataframe = dfs,
            homedir = getwd(),
            ladder = TRUE,
            laddername = "ladder.csv",
@@ -206,9 +212,9 @@ OGA <-
            stringencyfilt = 3,
            frequencyfilt = 0.05,
            measureInterval = 15,
-           fractionlowerlimit = 2,
-           limitexp = 1.3,
-           LimitNoGrowth=0.6,
+           lowerlimitslope = 0.01,
+           maxinflectionpoint = 1.3,
+           LimitNoGrowth=0.9,
            stats= TRUE)
     #OGA declaration
     # Begin
@@ -227,7 +233,7 @@ OGA <-
   
   
     ################################################################### Dusting and mopping
-    #Housecleaning / setting up directory environment
+    #Housekeeping / setting up directory environment
   
     setwd(homedir)#set directory to homedir
     results <-
@@ -251,6 +257,7 @@ OGA <-
       #if autoinput ==false print
     {
       print("Files were imported from user defined large list with nested dataframes named dfs")
+      dfs<-nestdataframe
     } else
       #else autoinput
     {
@@ -274,7 +281,6 @@ OGA <-
       }
       dfs <-
         Filter(f = function(x) is(x, "data.frame"), mget(ls())) #create nested list of all dataframes
-      ## This might cause a complaint from CRAN
     }
     #end reading in data
     ###################################################################
@@ -366,7 +372,7 @@ OGA <-
         #if user says there are blanks
       {
         blankwells <-
-          dfs[[dfnum]][, grep(blankname, names(dfs[[dfnum]]))]#for each dataframe within dfs find all columns with names containing BLANK and copy them to dataframe blankwells
+          dfs[[dfnum]][, grep(blankname, names(dfs[[dfnum]]))]#for dataframe (dfnum) within dfs find all columns with names containing BLANK and copy them to dataframe blankwells
         grepres <-
           grep(blankname, names(dfs[[dfnum]]))#create vector of location of blanks, vector length is used to define whether BLANKs were identified by GREP
         greplength <-
@@ -398,15 +404,14 @@ OGA <-
           #a least squares linear regression model is applied to each set of blank values
           #is is neccessary to find the slope of the blanks, as evaporation increases the OD 
           #of the blank wells throughout the course of the experiment
+          
+          
+          
           ###################################################################
           #remove bad blanks
           #The slope of each set of blank values is taken, any blank with a slope more than
           # 1 standard deviation from the mean of the slope of all of the blanks is removed
           # this is done under the assumption that any well with a high slope contains contaminates
-
-          
-          
-          
           ###################################################################
           #removing bad blanks
           badblank <-
@@ -447,7 +452,7 @@ OGA <-
                                                      #which is equal to the length of dfs this will be used to subtract the blank from all RAW SAMPLE data
           }
         } else
-        #user says there are no blanks, or no blanks detected
+        #inform filtering code that BLANK vector won't be subtracted, and tell user no BLANKS were found in .csv file
         {
           greplength = FALSE
           print(paste0("No BLANKS found for data set: ", names(dfs[dfnum]), ". Check the naming of BLANKS."))
@@ -470,7 +475,7 @@ OGA <-
         }
 
       } else
-      #inform filtering code that BLANK vector won't be subtracted
+      #inform filtering code that BLANK vector won't be subtracted, and tell user no BLANKS were defined
       {
         greplength = FALSE
         print("Blank wells not subtracted, blank =FALSE")
@@ -500,13 +505,7 @@ OGA <-
     
       print (paste0("Making calculations for data set: ", names(dfs[dfnum]))) #inform user which dataframe is being analyzed
       
-      
-     #k <-
-        
-      #((-horz[1]) + (horz[1] * dfnum) - (1 * (dfnum - 1)) + 1) # k is the column from the listed data frame to be read in, 
-                                                                 #skipping the first column of each dataframe with the assumption that this is the time information (USERS MUST USE THIS FORMAT)
-      
-      
+
       
       
       ################################################################### Sweeping patio
@@ -545,7 +544,7 @@ OGA <-
             setTxtProgressBar(pb, ii)
             
             
-            #write RAW sample data from column ii into a vector
+            #write RAW sample data from column ii (in dataframe dfnum) into a vector
             ypre <-
               as.vector(truewells[, ii]) 
             
@@ -556,14 +555,14 @@ OGA <-
             {
               y <-ymblk<-
                 (ypre - blnklmavg) #subtract calculated blank vector from vector containing column values
-                blankaverage<-mean(as.numeric(blnklmavg))
+                blankaverage<-mean(as.numeric(blnklmavg)) #write out average of blanks for later usage in determining wells with no growth
             } else
             {
-              y <-ymblk<- ypre #there were no blanks y RAW = y
-              blankaverage<-0
+              y <-ymblk<- ypre #there were no blanks yRAW = y
+              blankaverage<-0 #there was no blank, set blankaverage =0
             }
             
-            ulless[ii-1]<-which.max(which(y<limitexp)) #which y values are less than 1.4 (used to remove noise)
+            ulless[ii-1]<-which.max(which(y<maxinflectionpoint)) #which y values are less than maxinflectionpoint (user defined)
             ulmax[ii-1]<-y[which.max(y)] #what is the greatest y value (used to remove strains with no growth)
             
             
@@ -571,7 +570,7 @@ OGA <-
             #IF there was an OD ladder calibrate BLANK corrected values using polval, highest is the largest value allowed by limits of interpolator
             
             if (ladder == TRUE)
-              #if there was a normalization ladder
+              #if there was a calibration ladder
             {
               y<-polyval(pf, y)  #use polyval to calculate adjusted values of y
               
@@ -591,8 +590,8 @@ OGA <-
             #####################################################################################################
             #CREATE MIRRORED DATA FOR INPUT INTO BUTTERWORTH FILTER
             #Butterworth filters create distortions at the front and back ends of a dataset as 
-            #a result of the finite scope growth curves, to correct for this mirrored sample values of the dimension of the filter (stringency or order)
-            #are added to the beginning and end of the dataset, mirrored data has a null impact on the output of the filter
+            #a result of the finite scope of growth curves, to correct for this mirrored sample values of the dimension of the filter (stringency or order)
+            #are added to the beginning and end of the dataset, mirrored data has a null impact on the output of the filter, and is removed following filtering
             ####################################################################################################
             
             mirroredy <- 0
@@ -635,12 +634,12 @@ OGA <-
                   {break
                   }
               }
-              #find the first window in which the slope is fractionlowlimit* greater than the first positive slope
+              #find the first window in which the slope is lowerlimitslope greater than the first positive slope
               for (ll in 1:(ul-5))
               {
               llmean <- lm(yfilterd[ll:(ll+4)]~xaxe)$coefficients[2]
 
-              if (llmean > llonemean*fractionlowerlimit)
+              if (llmean > lowerlimitslope)
                
                 {
                   lowerlimit[ii - 1] <- low <- (ll+2)
@@ -657,7 +656,7 @@ OGA <-
 
             #####################################################################################################
             #calculate doubling time 
-            # in R log without a base is ln
+            # in R, log without a base is ln
             
             #all values of ycorrected must be greater than 0, if BLANK removal, or calibration made value less than 0 set=0.000001 
             for(t in 1:length(ycorrected)) {
@@ -677,16 +676,16 @@ OGA <-
             
             
             #####################################################################################################
-            #write out all values to SAMPLE_NAME.csv RAW for create.plot and downstream analysis
+            #write out all SAMPLE values to SAMPLE_NAME.csv RAW for create.plot and downstream analysis
               toplot <- as.data.frame(matrix(0, dim(truewells)[1], 8))
               colnames(toplot)[1] <- "x"
               colnames(toplot)[2] <- "ypre" #RAW y values
               colnames(toplot)[3] <- "y" #RAW y values minus blank
               colnames(toplot)[4] <- "yfiltered" #RAW y values minus blank, LADDER calibrated, filtered
               colnames(toplot)[5] <- "ycorrected" #RAW y values minus blank, LADDER calibrated
-              colnames(toplot)[6] <- "Upperlimit"
-              colnames(toplot)[7] <- "LowerLimit"
-              colnames(toplot)[8] <- "Rsquared"
+              colnames(toplot)[6] <- "Upperlimit" #upperlimit of exponential growth
+              colnames(toplot)[7] <- "LowerLimit" #lowerlimit of exponential growth
+              colnames(toplot)[8] <- "Rsquared" #rsquared value of range of growth curve picked as exponential
               toplot[, 1] <- c(1:dim(toplot)[1])
               toplot[, 2] <- ypre
               toplot[, 3] <- ymblk
@@ -705,7 +704,7 @@ OGA <-
           
           
 #####################################################################################################
-#write out all values to DATASET.csv results including DT data
+#write out all values to DATASET.csv results folder including DT data
       dataout <- as.data.frame(matrix(0, 9, length(dt)))
       nogrowth<- numeric(length(dt))
       toolow<- numeric(length(dt))
@@ -720,7 +719,7 @@ OGA <-
           "Limit of exponential growth",
           "Highest O.D",
           "No Growth",
-          "Contaminate",
+          "Exponential growth outside expected range",
           "BLANKAVERAGE")
       dataout[1, ] <- dt
       dataout[2, ] <- rsqrd
@@ -732,9 +731,11 @@ OGA <-
       dataout[8, ] <- contaminate
       dataout[9, ] <- toolow
       dataout[7, which(as.numeric(dataout[6,])<(LimitNoGrowth-blankaverage))] <-"No Growth"
-      dataout[8, which(as.numeric(dataout[5,])< as.numeric(dataout[4,]))] <-"Contaminates"
-      
-      
+      dataout[8, which(as.numeric(dataout[5,])< as.numeric(dataout[4,]))] <-"Unexpected Growth"
+      if (length(which(dataout[7,]=="No Growth"))>0)
+      {print("Wells Flagged For No Growth. User may need to increase measurement time.")}
+      if (length(which(dataout[8,]=="Unexpected Growth"))>0)
+      {print("Wells Flagged For Unexpected Growth. There may be contaminated wells.")}
       write.csv (dataout, file.path(results, file = paste0(names(dfs[dfnum]), "results.csv")))
 
         
@@ -743,13 +744,15 @@ OGA <-
       
     }
     #####################################################################################################
-    #average replicates
+    #average replicates and calculate statistics if stats =TRUE
     
     if(stats) 
     {
       stats(results,LimitNoGrowth)
     }
     
+    #####################################################################################################
+    #plot using create.plot if create.plot=TRUE
     if(create.plot)
     {
       create.plots(RAW)
