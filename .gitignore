@@ -3,6 +3,7 @@
 .RData
 .Ruserdata
 # ignore the generated csv files
+RAW/*-raw.csv
 *-raw.csv
 # Ignore a bunch of image based files
 # JPEG
