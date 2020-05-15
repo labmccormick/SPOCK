@@ -30,7 +30,7 @@ ladderCreate <- function(laddername = "ladder.csv",
       mean(as.numeric(ladderdf[lengthladder, 1:repladder]))#take mean of actual OD values
     pf <-
       polyfit(measlad, actlad, 4)#using polyfit fit measured and actual OD values to 3rd order polynomial and place those coefficients in pf
-   
+
   }
   highest<-actlad[which.max(actlad)]
   mylist<-list(pf,highest)
@@ -70,12 +70,12 @@ create.plots<-function(locationofRAW=homedir)
     Sys.sleep(0.01)
     # update progress bar pb, every iteration of plot
     setTxtProgressBar(pb, plot)
-    
+
   toplot<-read.csv(file_list_toplot[plot]) #read .csv from dir RAW into table for analysis
   ul<-toplot[1,6] #define the upper limit as picked by OGA
   low<-toplot[1,7] #define the lower limit as picked by OGA
   rval<-toplot[1,8] #set rval equal to Rvalue as determined by OGA
-   
+
   #PLOT RAW growth curve
    ggplot() +
     geom_line(data = toplot,
@@ -155,7 +155,7 @@ create.plots<-function(locationofRAW=homedir)
 
 #####################################################################################################
 #BEGIN FUNCTION OGA (OUTGROWTH ANALYSIS)
-#OGA calculates doubling times by subtracting blank wells, smoothing high frequency noise by a Butterworth filter,   
+#OGA calculates doubling times by subtracting blank wells, smoothing high frequency noise by a Butterworth filter,
 #picking the second limit by defining the inflection point of exponential growth as determined by the 1st derivative (diff) ul,
 #and first limit by a heuristically defined slope change
 #the doubling time is then calculated between these points
@@ -182,14 +182,14 @@ create.plots<-function(locationofRAW=homedir)
 
 ################################# Butterworth Filter Arguments
 #stringenctfilt=Stringency of filter applied by butterworth method (order of butterworth filter)
-#frequencyfilt=frequency above which to filter, 
+#frequencyfilt=frequency above which to filter,
 
 #### by plotting the absolute value of fft transformed data you can visualize where the underlying noise is within the dataset ####
 
 ################################# Doubling time calculation arguments
 #measureInterval is the time between sampling times t in minutes(default is 15 minutes)
 #fractionlowerlimit is the heuristically defined fractional value above which growth is defined as exponention
-#maxinflectionpoint defines the end of where exponential growth would be expected in OD. this is used to eliminate wells 
+#maxinflectionpoint defines the end of where exponential growth would be expected in OD. this is used to eliminate wells
 #with exponential growth following yeast growth phase (contaminates expected)
 #LimitNoGrowth limit below which a well is defined as having no growth, or insufficient data for analysis (Highest O.D value- Average blank at all time points)
 ####defined by slope at time n divided by slope at time 1 or tn/t1   ####
@@ -227,14 +227,14 @@ OGA <-
     #################### set arguments of butterworth filter
     bw <- butter(stringencyfilt, frequencyfilt)
 
-  print("STARTING")
-   
-  
-  
-  
+  print(paste("STARTING IN",homedir))
+
+
+
+
     ################################################################### Dusting and mopping
     #Housekeeping / setting up directory environment
-  
+
     setwd(homedir)#set directory to homedir
     results <-
       paste0(homedir, "/Results")#create variable results which identifies the path for the results directory
@@ -242,15 +242,15 @@ OGA <-
       paste0(homedir, "/RAW")#create variable RAW which identifies the path for the RAW directory
     dir.create(paste0("Results"), showWarnings = FALSE) #creates directory Results within current working directory
     dir.create(paste0("RAW"), showWarnings = FALSE) #creates directory RAW within current working directory
-    
+
     #End Housekeeping
     ################################################################### Putting away vacuum
-    
-    
-    
-    
+
+
+
+
     ###################################################################
-    #execute autoinput of data from all CSV's in current WD if autoinput is equal to true, 
+    #execute autoinput of data from all CSV's in current WD if autoinput is equal to true,
     #otherwise a user defined (nested dataframe) of name dfs must be fed into the function
 
     if (!autoinput)
@@ -279,20 +279,22 @@ OGA <-
       {
         assign(paste0(sub('.csv', '', basename(file_list[i]))), read.csv(file_list[i])) #read .csv into dataframe with the same name as original csv without extension.csv
       }
+      dfs <- vector(mode="list")
       dfs <-
         Filter(f = function(x) is(x, "data.frame"), mget(ls())) #create nested list of all dataframes
+      View(dfs)
     }
     #end reading in data
     ###################################################################
-    
-    
-    
-    
+
+
+
+
     ###################################################################
     #begin ladder creation
     #create list of polynomial coefficients for later use in polyval to correct OD's measured by the plate reader to actual OD.s
     #see ladderCreate
-   
+
 
     if (ladder)
       #if there is a ladder file create the following variables and process them
@@ -300,18 +302,18 @@ OGA <-
       pf<-unlist(ladderCreate(laddername,repladder)[1])
       highest<-unlist(ladderCreate(laddername,repladder)[2])
     }
-    
+
     #end ladder creation
     ###################################################################
-    
-    
-    
-    
+
+
+
+
     ###################################################################
     #begin dataframe dimension test
     #create the following variables so we can test the lengths of the nested dataframes
     #this test exists to inform the user when data don't possess the same number of wells and or time points
-    
+
     numdataframes <-
       as.numeric(length(dfs)) #numdataframes is the number of data frames in nested list
     horz <-
@@ -347,7 +349,7 @@ OGA <-
           FALSE #if the horizontal dimensions are not equal or testlength no longer remains true then set testlength=FALSE
       }
     }
-    if (testlength)  
+    if (testlength)
       #if testlength remains TRUE then print that the dimensions of the dataframes are compatible for outgrowth analysis
     {
       print("Data sets have same dimensions (number of O.D readings and number of wells sampled), data are compatible for Survival Analysis")
@@ -357,15 +359,15 @@ OGA <-
     }
     #end length test
     ###################################################################
-  
-    
-    
+
+
+
     ###################################################################
     #begin to manipulate data one dataframe (= one .csv input file) at a time from dfs listed data.frame
     for (dfnum in 1:numdataframes)
     {
-     
-      
+
+
       ###################################################################
       #define BLANK wells
       if (blank)
@@ -381,14 +383,14 @@ OGA <-
         if (length(grepres) > 0)
           #if grepres contains values greplength is TRUE (BLANKS exist)
         {
-          
-          
+
+
           ###################################################################
           #define SAMPLE Wells
           greplength <- TRUE
           #define all wells that aren't BLANKs
           truewells <-
-            dfs[[dfnum]][, -grep(blankname, names(dfs[[dfnum]]))] 
+            dfs[[dfnum]][, -grep(blankname, names(dfs[[dfnum]]))]
           #create dataframe to place first order derivative later
           fod <-
             as.data.frame(matrix(0, ((dim(truewells)[1]) - 1), ((dim(truewells)[2]) - 1)))
@@ -396,17 +398,17 @@ OGA <-
           yfilty <-
             as.data.frame(matrix(0, ((dim(truewells)[1])), ((dim(truewells)[2]) - 1)))
           ###################################################################
-          
+
           print(paste0("Blanks will be subtracted from data set: ", names(dfs[dfnum])))
-          
+
           ###################################################################
           #create vector of blank values
           #a least squares linear regression model is applied to each set of blank values
-          #is is neccessary to find the slope of the blanks, as evaporation increases the OD 
+          #is is neccessary to find the slope of the blanks, as evaporation increases the OD
           #of the blank wells throughout the course of the experiment
-          
-          
-          
+
+
+
           ###################################################################
           #remove bad blanks
           #The slope of each set of blank values is taken, any blank with a slope more than
@@ -423,10 +425,10 @@ OGA <-
           } #find slope of all blanks
           blankwells <-
             blankwells[which(abs(badblank - mean(badblank)) < sd(badblank))] #remove all blanks more than one standard deviation from the mean
-          
-          
-          
-          
+
+
+
+
           ###################################################################
           #creating vector of blank values for correction of RAW data
           blnk <-
@@ -448,7 +450,7 @@ OGA <-
             #for lmblank in 1:length of blnk vector
           {
             blnklmavg[lmblank] <-
-              (intvect[lmblank] * blankslope) + yint #calculate the blank value using the yint and slope from lm across a vector of size of intvect 
+              (intvect[lmblank] * blankslope) + yint #calculate the blank value using the yint and slope from lm across a vector of size of intvect
                                                      #which is equal to the length of dfs this will be used to subtract the blank from all RAW SAMPLE data
           }
         } else
@@ -496,43 +498,43 @@ OGA <-
             dim(truewells)[2]
           ) - 1)))
       }
-      
-      
-      
-      
+
+
+
+
 #Done handling blanks
 ###################################################################
-    
-      print (paste0("Making calculations for data set: ", names(dfs[dfnum]))) #inform user which dataframe is being analyzed
-      
 
-      
-      
+      print (paste0("Making calculations for data set: ", names(dfs[dfnum]))) #inform user which dataframe is being analyzed
+
+
+
+
       ################################################################### Sweeping patio
       #Housecleaning, creating variables
 
       upperlimit <- as.vector(c(1:(dim(fod)[2]))) #create vector to store infection points (upperlimit)
       lowerlimit <- upperlimit #create vector to store lower limits as defined by slope fraction
-      dt <- upperlimit #create vector to store dubling times 
-      rsqrd <- upperlimit #create vector to store rsqrd values 
+      dt <- upperlimit #create vector to store dubling times
+      rsqrd <- upperlimit #create vector to store rsqrd values
       ulless<- upperlimit
       ulmax<- upperlimit
-      
+
       #DONE HOUSEKEEPING
       ################################################################### putting away broom
-      
-      
-      
-      
+
+
+
+
       ###################################################################
       #Manipulate data one sample column at a time
-      
-      
+
+
         for (ii in 2:length(truewells))
             #for ii in 2:the number of columns containing RAW SAMPLE DATA
           {
-            
-          
+
+
             #create progress bar
             #####################################################################################################
             pb <-
@@ -542,15 +544,15 @@ OGA <-
             Sys.sleep(0.01)
             # update progress bar pb on each iteration ii
             setTxtProgressBar(pb, ii)
-            
-            
+
+
             #write RAW sample data from column ii (in dataframe dfnum) into a vector
             ypre <-
-              as.vector(truewells[, ii]) 
-            
+              as.vector(truewells[, ii])
+
             #Subtract BLANK wells if applicable
             #####################################################################################################
-            
+
             if (greplength == TRUE) #if BLANKS were identified and a vector created
             {
               y <-ymblk<-
@@ -561,39 +563,39 @@ OGA <-
               y <-ymblk<- ypre #there were no blanks yRAW = y
               blankaverage<-0 #there was no blank, set blankaverage =0
             }
-            
+
             ulless[ii-1]<-which.max(which(y<maxinflectionpoint)) #which y values are less than maxinflectionpoint (user defined)
             ulmax[ii-1]<-y[which.max(y)] #what is the greatest y value (used to remove strains with no growth)
-            
-            
+
+
             #####################################################################################################
             #IF there was an OD ladder calibrate BLANK corrected values using polval, highest is the largest value allowed by limits of interpolator
-            
+
             if (ladder == TRUE)
               #if there was a calibration ladder
             {
               y<-polyval(pf, y)  #use polyval to calculate adjusted values of y
-              
+
               for (interpol in 1:length(y))
               {
                 if(y[interpol]>highest) #set any values greater than highest allowed to highest value allowed
                 {y[interpol]<-highest
                 }
               }
-              ycorrected<-y  
+              ycorrected<-y
             } else
             {
               ycorrected <- y #else y is y
             }
 
-            
+
             #####################################################################################################
             #CREATE MIRRORED DATA FOR INPUT INTO BUTTERWORTH FILTER
-            #Butterworth filters create distortions at the front and back ends of a dataset as 
+            #Butterworth filters create distortions at the front and back ends of a dataset as
             #a result of the finite scope of growth curves, to correct for this mirrored sample values of the dimension of the filter (stringency or order)
             #are added to the beginning and end of the dataset, mirrored data has a null impact on the output of the filter, and is removed following filtering
             ####################################################################################################
-            
+
             mirroredy <- 0
             mirroredy[((length(y) * 0) + 1):((length(y) * 0) + length(y))] <-
               y[length(y):1]
@@ -601,26 +603,26 @@ OGA <-
               y[1:length(y)]
             mirroredy[((length(y) * 2) + 1):((length(y) * 2) + length(y))] <-
               y[length(y):1]
-            
+
             #####################################################################################################
             #apply butterworth filter
             filteredmirroedy <- filtfilt(bw, mirroredy)
-          
+
             #remove mirrored data from filtered data
             yfilterd <- filteredmirroedy[(length(y) + 1):((length(y) * 2))]
-            
+
             #write values to dataframe of filtered values
             yfilty[, (ii - 1)] <- yfilterd
-            
-            #determine the first order derivative 
+
+            #determine the first order derivative
             fod[, (ii - 1)] <- diff(yfilterd)
-            
+
             #define the inflection point of the exponential growth curve, this will always be the largest first order derivative assuming only one exponential growth phase
             upperlimit[ii - 1] <- ul <- which.max(fod[, ii - 1])
-            
+
             #####################################################################################################
-            #define the lower limit      
-            
+            #define the lower limit
+
             #check that the upperlimit is greater than 5 (that there was growth)
             if (ul > 5)
             {
@@ -640,7 +642,7 @@ OGA <-
               llmean <- lm(yfilterd[ll:(ll+4)]~xaxe)$coefficients[2]
 
               if (llmean > lowerlimitslope)
-               
+
                 {
                   lowerlimit[ii - 1] <- low <- (ll+2)
                   break
@@ -655,17 +657,17 @@ OGA <-
             }
 
             #####################################################################################################
-            #calculate doubling time 
+            #calculate doubling time
             # in R, log without a base is ln
-            
-            #all values of ycorrected must be greater than 0, if BLANK removal, or calibration made value less than 0 set=0.000001 
+
+            #all values of ycorrected must be greater than 0, if BLANK removal, or calibration made value less than 0 set=0.000001
             for(t in 1:length(ycorrected)) {
               if (ycorrected[t] < 0) {
                 ycorrected[t] <- 0.000001
               }
-            } 
-    
-            
+            }
+
+
             ydd <- log(ycorrected[low:ul])
             xs <- c(1:(length(ydd)))
             slopedt <-
@@ -673,8 +675,8 @@ OGA <-
             rsqrd[ii - 1] <- rval <- rsq(slopedt)
             dt[ii - 1] <-
               measureInterval * (log(2) / as.numeric(slopedt$coefficients[2]))#divide ln(2)by the growth rate (slope of ln transformed data)
-            
-            
+
+
             #####################################################################################################
             #write out all SAMPLE values to SAMPLE_NAME.csv RAW for create.plot and downstream analysis
               toplot <- as.data.frame(matrix(0, dim(truewells)[1], 8))
@@ -695,14 +697,14 @@ OGA <-
               toplot[1,7] <-low
               toplot[1,8] <-rval
               write.csv (toplot, file.path(RAW, file = paste0(names(dfs)[[dfnum]], names(truewells)[ii], "-raw.csv")),row.names = FALSE)
-            
+
             rm(mirroredy, ycorrected, filteredmirroedy, yfilterd, ul)
           }
           close(pb)
           setwd(homedir)
           print("Complete")
-          
-          
+
+
 #####################################################################################################
 #write out all values to DATASET.csv results folder including DT data
       dataout <- as.data.frame(matrix(0, 9, length(dt)))
@@ -738,19 +740,19 @@ OGA <-
       {print("Wells Flagged For Unexpected Growth. There may be contaminated wells.")}
       write.csv (dataout, file.path(results, file = paste0(names(dfs[dfnum]), "results.csv")))
 
-        
-      
+
+
       rm(dataout, lowerlimit, upperlimit, truewells)
-      
+
     }
     #####################################################################################################
     #average replicates and calculate statistics if stats =TRUE
-    
-    if(stats) 
+
+    if(stats)
     {
       stats(results,LimitNoGrowth)
     }
-    
+
     #####################################################################################################
     #plot using create.plot if create.plot=TRUE
     if(create.plot)
