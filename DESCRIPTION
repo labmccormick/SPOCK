@@ -14,5 +14,11 @@ Depends: R (>= 3.1.0),
  pracma,
  rsq,
  signal
+Imports: 
+ ggplot2,
+ pracma,
+ rsq,
+ signal,
+ methods
 License: GPL-3
 LazyData: true

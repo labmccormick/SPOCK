@@ -5,7 +5,7 @@
 ladderCreate <- function(laddername = "ladder.csv",
                          repladder = 3)
 {
-  library(pracma)
+  # library(pracma)    ### This throws an Error for package building
   pf <- data.frame()
   highest<-vector() # this is the point past which the interpolator is extrapolative, write this out for use later
   ladderdf <-
@@ -48,7 +48,7 @@ ladderCreate <- function(laddername = "ladder.csv",
 
 create.plots<-function(locationofRAW=homedir)
 {
-  library(ggplot2)
+  # library(ggplot2)  ### This throws an error for package building
   print(locationofRAW)
   print("Creating Plots")
   setwd(locationofRAW) #point function to directory containing raw output files from OGA function, these are used to plot
@@ -220,12 +220,8 @@ OGA <-
     # Begin
   {
     # call all libraries used in function
-    library(pracma)
-    library(signal)
-    library(rsq)
-    library(ggplot2)
     #################### set arguments of butterworth filter
-    bw <- butter(stringencyfilt, frequencyfilt)
+    bw <- signal::butter(stringencyfilt, frequencyfilt)
 
   print(paste("STARTING IN",homedir))
 
@@ -573,7 +569,7 @@ OGA <-
             if (ladder == TRUE)
               #if there was a calibration ladder
             {
-              y<-polyval(pf, y)  #use polyval to calculate adjusted values of y
+              y<-signal::polyval(pf, y)  #use polyval to calculate adjusted values of y
 
               for (interpol in 1:length(y))
               {
@@ -605,7 +601,7 @@ OGA <-
 
             #####################################################################################################
             #apply butterworth filter
-            filteredmirroedy <- filtfilt(bw, mirroredy)
+            filteredmirroedy <- signal::filtfilt(bw, mirroredy)
 
             #remove mirrored data from filtered data
             yfilterd <- filteredmirroedy[(length(y) + 1):((length(y) * 2))]
@@ -671,7 +667,7 @@ OGA <-
             xs <- c(1:(length(ydd)))
             slopedt <-
               lm(ydd ~ xs) # write list from (lm) (lm) is the linear model of mywindow and my x
-            rsqrd[ii - 1] <- rval <- rsq(slopedt)
+            rsqrd[ii - 1] <- rval <- rsq::rsq(slopedt)
             dt[ii - 1] <-
               measureInterval * (log(2) / as.numeric(slopedt$coefficients[2]))#divide ln(2)by the growth rate (slope of ln transformed data)
 
