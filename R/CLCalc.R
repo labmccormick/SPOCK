@@ -17,7 +17,7 @@ CLSCalc <- function(delta, doubleTime = 90*60)
 SurvivalPercentage <- function()
 {
   file_list <-
-    list.files(pattern = "*first.csv") #list all files in current working directory with extension.csv
+    list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*.csv") #list all files in current working directory with extension.csv
 
   for (i in 1:length (file_list))
     #loop 1:x total number of CSV files in directory (ignoring ladder.csv)
@@ -26,10 +26,9 @@ SurvivalPercentage <- function()
   }
   dfs <-
     Filter(f = function(x) is(x, "data.frame"), mget(ls())) #create nested list of all dataframes
-
   # This creates a data frame that specifically holds the upper limit(ul.df) and doubling time(dt.df)
   ul.df <- data.frame()
-  dt.df <- dfs[[grep("LOG",names(dfs))]][1,]
+  dt.df <- dfs[[grep("Day_1$",names(dfs))]][1,]
 
   qvalue <- c()
   strsplit(names(dfs[1]),"_")[[1]][2]
@@ -38,17 +37,16 @@ SurvivalPercentage <- function()
   for(x in seq_along(dfs))
   {
     print(names(dfs[x]))
-    qvalue[x] <- as.numeric(gsub("([0-9]+).*$", "\\1", strsplit(names(dfs[x]),"_")[[1]][2]))
+    qvalue[x] <- as.numeric(gsub("([0-9]+).*$", "\\1", strsplit(names(dfs[x]),"_")[[1]][3]))
     ul.df <- rbind(ul.df,dfs[[x]][4,])
   }
-
   # sortedDt is a sorted doubling time data frame so that the survival data frame is in a manner
   # that is age+1 is the next element in the data frame so solving the survival function
   # makes sense
 
   ul.df[,1] <- qvalue
-  sortedDt <- ul.df[order(ul.df$Time),]
-  sortedDt <- sortedDt[-nrow(sortedDt),]
+  sortedDt <- ul.df[order(ul.df$X),]
+  # sortedDt <- sortedDt[-nrow(sortedDt),]
   survDt <- sortedDt
   survDt[1,] <- 100
   survDt[1,1] <- 1
@@ -62,7 +60,7 @@ SurvivalPercentage <- function()
     SI = 0
     for(y in 2:5)
     {
-      Sn <-CLSCalc((sortedDt[y,z]-sortedDt[1,z]),dt.df[1,z])
+      Sn <-CLSCalc((as.numeric(sortedDt[y,z])-as.numeric(sortedDt[1,z])),dt.df[1,z])
       #print(paste0(paste(paste0("Day ",paste(paste0(sortedDt[y,1],":"),Sn)),"based on:"),dt.df[1,z]))
       survDt[y,z]<-format(round(Sn,2),nsmall=2)
       print(( (as.numeric(survDt[y,z]) + as.numeric(survDt[y-1,z]) ) / 2)*(as.numeric(survDt[y,1]) - as.numeric(survDt[y-1,1])))
