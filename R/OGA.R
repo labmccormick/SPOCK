@@ -84,7 +84,7 @@ create.plots<-function(locationofRAW=homedir)
                 y = y,
                 colour = "darkred"
               ),
-              size = 1) +
+              size = 2) +
     #PLOT growth curve after BLANK subtraction
     geom_line(data = toplot,
               aes(
@@ -92,7 +92,7 @@ create.plots<-function(locationofRAW=homedir)
                 y = ypre,
                 colour = "darkgreen"
               ),
-              size = 1) +
+              size = 2) +
      #PLOT growth curve after filtering
     geom_line(data = toplot,
               aes(
@@ -100,7 +100,7 @@ create.plots<-function(locationofRAW=homedir)
                 y = yfiltered,
                 colour = "darkblue"
               ),
-              size = 1) +
+              size = 2) +
      #PLOT growth curve after OD correction
     geom_line(data = toplot,
               aes(
@@ -108,7 +108,7 @@ create.plots<-function(locationofRAW=homedir)
                 y = ycorrected,
                 colour = "purple"
               ),
-              size = 1) +
+              size = 2) +
      #PLOT upperlimit of exponential growth as defined by OGA
     geom_point(data = toplot,
                aes(x = ul, y = yfiltered[ul]),
