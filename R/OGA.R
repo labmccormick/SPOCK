@@ -75,7 +75,7 @@ create.plots<-function(locationofRAW=homedir)
   ul<-toplot[1,6] #define the upper limit as picked by OGA
   low<-toplot[1,7] #define the lower limit as picked by OGA
   rval<-toplot[1,8] #set rval equal to Rvalue as determined by OGA
-  if(mean(toplot$ycorrected)>0)
+  if(mean(toplot$ycorrected)==0)
   {
     ggplot() +
       geom_line(data = toplot,
@@ -119,7 +119,7 @@ create.plots<-function(locationofRAW=homedir)
           "Before removing blank",
           "Blank removed"
         )
-      )
+      ) +
 
       #Assign names to axes
       labs(
@@ -183,7 +183,7 @@ create.plots<-function(locationofRAW=homedir)
       "Blank removed",
       "Corrected to OD Ladder, if ladder was provided"
       )
-      )
+      ) +
 
      #Assign names to axes
     labs(
@@ -279,7 +279,7 @@ OGA <-
            maxinflectionpoint = 1.3,
            LimitNoGrowth=0.9,
            stats = TRUE,
-           bacteria = 45,
+           bacteria = 70,
            laglimit=0.1)
     #OGA declaration
     # Begin
@@ -808,7 +808,7 @@ OGA <-
       {print("Wells flagged for unexpected growth. There may be contaminated wells.")}
       if (length(which(dataout[10,]=="CONTAMINATION"))>0)
       {print("Wells flagged with bacterial contamination.")}
-      write.csv (dataout, file.path(results, file = paste0(names(dfs[dfnum]), "results.csv")))
+      write.csv (dataout, file.path(results, file = paste0("results-",names(dfs[dfnum]),".csv")))
 
 
 
