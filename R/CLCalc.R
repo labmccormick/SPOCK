@@ -14,11 +14,12 @@ CLSCalc <- function(delta, doubleTime = 90*60)
 
 #setwd("/home/fitz/code/OGA-test/Results/") # this is the location of the results csv files
 
-SurvivalPercentage <- function()
+SurvivalPercentage <- function(homedir = getwd())
 {
+  setwd(homedir)
   file_list <-
     list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*.csv") #list all files in current working directory with extension.csv
-
+  print(file_list)
   for (i in 1:length (file_list))
     #loop 1:x total number of CSV files in directory (ignoring ladder.csv)
   {
@@ -40,10 +41,10 @@ SurvivalPercentage <- function()
     qvalue[x] <- as.numeric(gsub("([0-9]+).*$", "\\1", strsplit(names(dfs[x]),"_")[[1]][3]))
     ul.df <- rbind(ul.df,dfs[[x]][4,])
   }
+  View(ul.df)
   # sortedDt is a sorted doubling time data frame so that the survival data frame is in a manner
   # that is age+1 is the next element in the data frame so solving the survival function
   # makes sense
-
   ul.df[,1] <- qvalue
   sortedDt <- ul.df[order(ul.df$X),]
   # sortedDt <- sortedDt[-nrow(sortedDt),]
@@ -56,18 +57,17 @@ SurvivalPercentage <- function()
 
   for(z in 2:length(sortedDt[1,]))
   {
-    print(paste0("Results for ",colnames(ul.df)[z]))
+    #print(paste0("Results for ",colnames(ul.df)[z]))
     SI = 0
-    for(y in 2:5)
+    for(y in 2:length(qvalue))
     {
       Sn <-CLSCalc((as.numeric(sortedDt[y,z])-as.numeric(sortedDt[1,z])),dt.df[1,z])
       #print(paste0(paste(paste0("Day ",paste(paste0(sortedDt[y,1],":"),Sn)),"based on:"),dt.df[1,z]))
       survDt[y,z]<-format(round(Sn,2),nsmall=2)
-      print(( (as.numeric(survDt[y,z]) + as.numeric(survDt[y-1,z]) ) / 2)*(as.numeric(survDt[y,1]) - as.numeric(survDt[y-1,1])))
-      #print(t)
     }
-
-    print("---------------------------------------------------------------")
+    write.csv(survDt,file="Survival.csv",row.names = FALSE)
+    #write.csv (toplot, file.path(RAW, file = paste0(names(dfs)[[dfnum]], names(truewells)[ii], "-raw.csv")),row.names = FALSE)
+    #print("---------------------------------------------------------------")
   }
 }
 
@@ -97,3 +97,24 @@ SurvivalPercentage <- function()
 #  lowerlimit <- low <- 1
 #  print("ZERO")
 #}
+
+
+
+
+# ############## saved for use later to get names more clearly dealt with
+# > list.files(pattern = "results-[[:alnum:]]*_Day_[[:digit:]]*.csv")
+# character(0)
+# > list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*\\D*.csv")
+# [1] "EMSQCLS_Day_14.csv" "EMSQCLS_Day_21.csv" "EMSQCLS_Day_28.csv" "EMSQCLS_Day_7.csv"
+# > list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*\\D.csv")
+# character(0)
+# > list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*\\D*.csv")
+# [1] "EMSQCLS_Day_14.csv" "EMSQCLS_Day_21.csv" "EMSQCLS_Day_28.csv" "EMSQCLS_Day_7.csv"
+# > list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*[:graph:]*.csv")
+# [1] "EMSQCLS_Day_14.csv" "EMSQCLS_Day_21.csv" "EMSQCLS_Day_28.csv" "EMSQCLS_Day_7.csv"
+# > list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*[[:graph:]]*.csv")
+# [1] "EMSQCLS_Day_14.csv"            "EMSQCLS_Day_1gross78stuff.csv" "EMSQCLS_Day_21.csv"
+# [4] "EMSQCLS_Day_28.csv"            "EMSQCLS_Day_7.csv"
+# > library(stringr)
+# > str_extract(list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*[[:graph:]]*.csv"),"Day_[[:digit:]]*")
+# [1] "Day_14" "Day_1"  "Day_21" "Day_28" "Day_7
