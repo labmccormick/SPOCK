@@ -258,6 +258,7 @@ create.plots<-function(locationofRAW=homedir)
 
 ################################# Handling of bacterial contamination
 #bacteria = assumed doubling time of bacteria, doubling times less than this limit will be flagged as wells with bacterial contamination
+#laglimit= end of linear range of OD readings, correction ladder can't correct low OD values
 
 #####################################################################################################
 
@@ -278,7 +279,8 @@ OGA <-
            maxinflectionpoint = 1.3,
            LimitNoGrowth=0.9,
            stats = TRUE,
-           bacteria = 45)
+           bacteria = 45,
+           laglimit=0.1)
     #OGA declaration
     # Begin
   {
@@ -479,7 +481,7 @@ OGA <-
           for (findbad in 1:dim(blankwells)[2])
           {
             badblank[findbad] <-
-              lm(blankwells[findbad][, ] ~ c(1:dim(blankwells)[1]))$coefficients[2]
+              suppressWarnings(lm(blankwells[findbad][, ] ~ c(1:dim(blankwells)[1]))$coefficients[2])
           } #find slope of all blanks
           blankwells <-
             blankwells[which(abs(badblank - mean(badblank)) < sd(badblank))] #remove all blanks more than one standard deviation from the mean
@@ -501,9 +503,9 @@ OGA <-
             blnk[meanblank] <- mean(as.numeric(blankwells[meanblank, ]))
           } #averge all blanks on plate at each time point measured
           yint <-
-            lm(blnk ~ c(1:length(blnk)))$coefficients[1] #using lm find yint and slope of the line that all blank measurements form over total time blanks are measured
+            suppressWarnings(lm(blnk ~ c(1:length(blnk)))$coefficients[1]) #using lm find yint and slope of the line that all blank measurements form over total time blanks are measured
           blankslope <-
-            lm(blnk ~ c(1:length(blnk)))$coefficients[2] #slope of above
+            suppressWarnings(lm(blnk ~ c(1:length(blnk)))$coefficients[2]) #slope of above
           for (lmblank in 1:length(blnk))
             #for lmblank in 1:length of blnk vector
           {
@@ -640,7 +642,6 @@ OGA <-
                 {y[interpol]<-highest
                 }
               }
-              ycorrected<-numeric(length(ymblk))
             } else
             {
               ycorrected <- y #else y is y
@@ -682,22 +683,18 @@ OGA <-
             #define the lower limit
 
             #check that the upperlimit is greater than 5 (that there was growth)
-            if (ul > 5)
+            fpoz<-which(yfilterd>0.02)[1]
+
+            if (ul > 5 & is.na(fpoz)==FALSE)
             {
               xaxe<-as.vector(c(1:5))
-              llonemean<--1
+
               #find the first window in which the slope is greater than 0 (remember bioscreen errors negatively affect first data points)
-              for (lq in 1:(ul-5))
-              {
-                llonemean<-lm(yfilterd[lq:(lq+4)]~xaxe)$coefficients[2]
-                if (llonemean>0)
-                  {break
-                  }
-              }
+
               #find the first window in which the slope is lowerlimitslope greater than the first positive slope
-              for (ll in 1:(ul-5))
+              for (ll in fpoz:(ul-5))
               {
-              llmean <- lm(yfilterd[ll:(ll+4)]~xaxe)$coefficients[2]
+              llmean <- suppressWarnings(lm(yfilterd[ll:(ll+4)]~xaxe)$coefficients[2])
 
               if (llmean > lowerlimitslope)
 
@@ -713,7 +710,7 @@ OGA <-
             {
               lowerlimit[ii-1] <- low <- 1
             }
-
+            rm(fpoz)
             #####################################################################################################
             #calculate doubling time
             # in R, log without a base is ln
@@ -725,18 +722,28 @@ OGA <-
               }
             }
 
-
-            ydd <- log(ycorrected[low:ul])
+            ydd<-ycorrected[low:ul]
+            finallower<-which(ydd>laglimit)[1]
+            if(is.na(finallower)==FALSE)
+            {
+            ydd<-ydd[finallower:ul]
+            }
+            ydd <- log(ydd)
             xs <- c(1:(length(ydd)))
+            xs<-xs*measureInterval
             slopedt <-
-              lm(ydd ~ xs) # write list from (lm) (lm) is the linear model of mywindow and my x
+              suppressWarnings(lm(ydd ~ xs)) # write list from (lm) (lm) is the linear model of mywindow and my x
             rsqrd[ii - 1] <- rval <- rsq::rsq(slopedt)
             dt[ii - 1] <-
-              measureInterval * (log(2) / as.numeric(slopedt$coefficients[2]))#divide ln(2)by the growth rate (slope of ln transformed data)
-
+              (log(2) / as.numeric(slopedt$coefficients[2]))#divide ln(2)by the growth rate (slope of ln transformed data)
+            rm(xs)
 
             #####################################################################################################
             #write out all SAMPLE values to SAMPLE_NAME.csv RAW for create.plot and downstream analysis
+            if (ladder == FALSE)
+              #if there was a calibration ladder
+            { ycorrected<-numeric(length(ymblk))
+            }
               toplot <- as.data.frame(matrix(0, dim(truewells)[1], 8))
               colnames(toplot)[1] <- "x"
               colnames(toplot)[2] <- "ypre" #RAW y values
