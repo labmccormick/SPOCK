@@ -197,6 +197,9 @@ create.plots<-function(locationofRAW=homedir)
 ################################# Handling of statistics
 #stats = TRUE the mean, SD, and SEM of each sample with same name will be calculated
 
+################################# Handling of bacterial contamination
+#bacteria = assumed doubling time of bacteria, doubling times less than this limit will be flagged as wells with bacterial contamination
+
 #####################################################################################################
 
 OGA <-
@@ -215,7 +218,8 @@ OGA <-
            lowerlimitslope = 0.01,
            maxinflectionpoint = 1.3,
            LimitNoGrowth=0.9,
-           stats= TRUE)
+           stats = TRUE,
+           bacteria = 45)
     #OGA declaration
     # Begin
   {
@@ -702,7 +706,7 @@ OGA <-
 
 #####################################################################################################
 #write out all values to DATASET.csv results folder including DT data
-      dataout <- as.data.frame(matrix(0, 9, length(dt)))
+      dataout <- as.data.frame(matrix(0, 10, length(dt)))
       nogrowth<- numeric(length(dt))
       toolow<- numeric(length(dt))
       toolow[1]<-blankaverage
@@ -727,12 +731,16 @@ OGA <-
       dataout[7, ] <- nogrowth
       dataout[8, ] <- contaminate
       dataout[9, ] <- toolow
+      dataout[10, ]<-contaminate
       dataout[7, which(as.numeric(dataout[6,])<(LimitNoGrowth-blankaverage))] <-"No Growth"
       dataout[8, which(as.numeric(dataout[5,])< as.numeric(dataout[4,]))] <-"Unexpected Growth"
+      dataout[10, which(as.numeric(dataout[1,])<(bacteria))]<-"CONTAMINATION"
       if (length(which(dataout[7,]=="No Growth"))>0)
-      {print("Wells Flagged For No Growth. User may need to increase measurement time.")}
+      {print("Wells flagged for no growth. User may need to increase measurement time.")}
       if (length(which(dataout[8,]=="Unexpected Growth"))>0)
-      {print("Wells Flagged For Unexpected Growth. There may be contaminated wells.")}
+      {print("Wells flagged for unexpected growth. There may be contaminated wells.")}
+      if (length(which(dataout[10,]=="CONTAMINATION"))>0)
+      {print("Wells flagged with bacterial contamination.")}
       write.csv (dataout, file.path(results, file = paste0(names(dfs[dfnum]), "results.csv")))
 
 
