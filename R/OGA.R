@@ -75,7 +75,62 @@ create.plots<-function(locationofRAW=homedir)
   ul<-toplot[1,6] #define the upper limit as picked by OGA
   low<-toplot[1,7] #define the lower limit as picked by OGA
   rval<-toplot[1,8] #set rval equal to Rvalue as determined by OGA
+  if(mean(toplot$ycorrected)>0)
+  {
+    ggplot() +
+      geom_line(data = toplot,
+                aes(
+                  x = x,
+                  y = y,
+                  colour = "darkred"
+                ),
+                size = 2) +
+      #PLOT growth curve after BLANK subtraction
+      geom_line(data = toplot,
+                aes(
+                  x = x,
+                  y = ypre,
+                  colour = "darkgreen"
+                ),
+                size = 2) +
+      #PLOT growth curve after filtering
+      geom_line(data = toplot,
+                aes(
+                  x = x,
+                  y = yfiltered,
+                  colour = "darkblue"
+                ),
+                size = 2) +
+      #PLOT upperlimit of exponential growth as defined by OGA
+      geom_point(data = toplot,
+                 aes(x = ul, y = yfiltered[ul]),
+                 size = 3) +
+      #PLOT lowerlimit of exponential growth as defined by OGA
+      geom_point(data = toplot,
+                 aes(x = low, y = yfiltered[low]),
+                 size = 3,
+                 colour = "red") +
+      #Assign names to plot legend
 
+      scale_color_discrete(
+        name = paste("Growth Curves. Rsquared of", rval, "between points"),
+        labels = c(
+          "Filtered",
+          "Before removing blank",
+          "Blank removed"
+        )
+      )
+
+      #Assign names to axes
+      labs(
+        title = paste(basename(file_list_toplot[plot]), "Transformed Curves"),
+        x = "Time",
+        y = "O.D 600 nm"
+      )
+    #Save as png plot for respective .csv RAW file
+
+  }else
+    {
   #PLOT RAW growth curve
    ggplot() +
     geom_line(data = toplot,
@@ -102,13 +157,13 @@ create.plots<-function(locationofRAW=homedir)
               ),
               size = 2) +
      #PLOT growth curve after OD correction
-    geom_line(data = toplot,
-              aes(
-                x = x,
-                y = ycorrected,
-                colour = "purple"
-              ),
-              size = 2) +
+       geom_line(data = toplot,
+                 aes(
+                   x = x,
+                   y = ycorrected,
+                   colour = "purple"
+                 ),
+                 size = 2) +
      #PLOT upperlimit of exponential growth as defined by OGA
     geom_point(data = toplot,
                aes(x = ul, y = yfiltered[ul]),
@@ -119,15 +174,17 @@ create.plots<-function(locationofRAW=homedir)
                size = 3,
                colour = "red") +
      #Assign names to plot legend
-    scale_color_discrete(
+
+      scale_color_discrete(
       name = paste("Growth Curves. Rsquared of", rval, "between points"),
       labels = c(
-        "Filtered",
-        "Before removing blank",
-        "Blank removed",
-        "Corrected to OD Ladder, if ladder was provided"
+      "Filtered",
+      "Before removing blank",
+      "Blank removed",
+      "Corrected to OD Ladder, if ladder was provided"
       )
-    ) +
+      )
+
      #Assign names to axes
     labs(
       title = paste(basename(file_list_toplot[plot]), "Transformed Curves"),
@@ -135,7 +192,9 @@ create.plots<-function(locationofRAW=homedir)
       y = "O.D 600 nm"
     )
    #Save as png plot for respective .csv RAW file
-  ggsave(
+  }
+
+   ggsave(
     path = plots,
     filename = paste0(basename(file_list_toplot[plot]), ".png"),
     width = 16,
@@ -581,7 +640,7 @@ OGA <-
                 {y[interpol]<-highest
                 }
               }
-              ycorrected<-y
+              ycorrected<-numeric(length(ymblk))
             } else
             {
               ycorrected <- y #else y is y
@@ -697,7 +756,7 @@ OGA <-
               toplot[1,8] <-rval
               write.csv (toplot, file.path(RAW, file = paste0(names(dfs)[[dfnum]], names(truewells)[ii], "-raw.csv")),row.names = FALSE)
 
-            rm(mirroredy, ycorrected, filteredmirroedy, yfilterd, ul)
+            rm(mirroredy, ycorrected, filteredmirroedy, yfilterd, ul, ymblk, y)
           }
           close(pb)
           setwd(homedir)
@@ -721,7 +780,8 @@ OGA <-
           "Highest O.D",
           "No Growth",
           "Exponential growth outside expected range",
-          "BLANKAVERAGE")
+          "BLANKAVERAGE",
+          "BACTERIAL CONTAMINATION")
       dataout[1, ] <- dt
       dataout[2, ] <- rsqrd
       dataout[3, ] <- lowerlimit

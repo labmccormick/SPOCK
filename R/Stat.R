@@ -8,7 +8,7 @@ stats <- function(locationofresults=results,LimitNoGrowth=LimitNoGrowth)
       setwd(locationofresults)
       stats <-
         paste0(locationofresults, "/Replicate_Stats")#create variable replicate_states which identifies the path for the replicate_stats directory
-      
+
       dir.create(paste0("Replicate_Stats"), showWarnings = FALSE) #creates directory replicate_states within current working directory
       file_list_tostat <-
         list.files(pattern = "*.csv") #create list of all result outputfiles from OGA in dir results
@@ -19,16 +19,19 @@ stats <- function(locationofresults=results,LimitNoGrowth=LimitNoGrowth)
       #Housekeeping
       daf<-as.data.frame(read.csv(file_list_tostat[analysis], row.names = 1, stringsAsFactors=FALSE))
       toolow<-(LimitNoGrowth-(as.numeric(daf[9,1])))
+      xh<-xg<-xf<-0
       xh<-which(as.numeric(daf[6,])>toolow)
       daf<-daf[,xh]
       xg<-which(as.numeric(daf[5,])>as.numeric(daf[4,]))
       daf<-daf[,xg]
+      xf<-which(daf[10,]!="CONTAMINATION")
+      daf<-daf[,xf]
       dfg<-daf
       name<-0
       average<-0
       sd<-0
       se<-0
-      
+
             for (l in 1:length(colnames(daf)))
             {
               name[l]<-sub("\\..*", "", colnames(dfg)[1]) #take name of first SAMPLE and remove R inserted .# values
