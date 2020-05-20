@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+#<<<<<<< HEAD
 ###
 ### Commented out print statements are lazy man debugging, uncomment if you want to see the
 ### code as it goes
