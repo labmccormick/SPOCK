@@ -8,7 +8,7 @@ stats <- function(locationofresults=results,LimitNoGrowth=LimitNoGrowth)
       setwd(locationofresults)
       stats <-
         paste0(locationofresults, "/Replicate_Stats")#create variable replicate_states which identifies the path for the replicate_stats directory
-      
+
       dir.create(paste0("Replicate_Stats"), showWarnings = FALSE) #creates directory replicate_states within current working directory
       file_list_tostat <-
         list.files(pattern = "*.csv") #create list of all result outputfiles from OGA in dir results
@@ -28,12 +28,17 @@ stats <- function(locationofresults=results,LimitNoGrowth=LimitNoGrowth)
       average<-0
       sd<-0
       se<-0
-      
+
             for (l in 1:length(colnames(daf)))
             {
               name[l]<-sub("\\..*", "", colnames(dfg)[1]) #take name of first SAMPLE and remove R inserted .# values
               reps<-grep(name[l], colnames(dfg)) #find all SAMPLES with same name as column 1
-              average[l]<-mean(as.numeric(dfg[1,reps])) #average these columns doubling time
+              dtval<-(as.numeric(dfg[1,reps]))
+              dtval[is.na(dtval)]<-0
+              dtval[is.infinite(dtval)]<-0
+              if(length(dtval)>0)
+              {
+              average[l]<-mean(as.numeric(dtval)) #average these columns doubling time
               sd[l]<-sd(as.numeric(dfg[1,reps])) #find SD of these columns doubling time
               se<-(sd/sqrt(length(reps))) #find SEM of these columns doubling time
               if(dim(dfg)[2]>length(reps)) #remove SAMPLE replicate columns from further analysis
@@ -41,6 +46,7 @@ stats <- function(locationofresults=results,LimitNoGrowth=LimitNoGrowth)
               }else{
               dfg<-0 #if all columns have been analyzed stop
               break}
+              }
             }
       avdataout<-as.data.frame(cbind(average,sd,se)) #create dataframe and store stats here
       rownames(avdataout)<-name
