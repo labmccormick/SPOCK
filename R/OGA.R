@@ -307,7 +307,7 @@ OGA <-
   Sys.sleep(15)
   print(paste("STARTING",homedir))
 
-
+  print("FUCK?????")
 
 
     ################################################################### Dusting and mopping
