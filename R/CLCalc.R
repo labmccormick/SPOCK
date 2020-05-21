@@ -14,9 +14,9 @@ CLSCalc <- function(delta, doubleTime = 90*60)
 
 #setwd("/home/fitz/code/OGA-test/Results/") # this is the location of the results csv files
 
-SurvivalPercentage <- function(homedir = getwd())
+SurvivalPercentage <- function(RAWpath = getwd(),firstDay = 1)
 {
-  setwd(homedir)
+  setwd(RAWpath)
   file_list <-
     list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*.csv") #list all files in current working directory with extension.csv
   print(file_list)
@@ -28,8 +28,9 @@ SurvivalPercentage <- function(homedir = getwd())
   dfs <-
     Filter(f = function(x) is(x, "data.frame"), mget(ls())) #create nested list of all dataframes
   # This creates a data frame that specifically holds the upper limit(ul.df) and doubling time(dt.df)
+  firstDaygrep = paste0("Day_",firstDay)
   ul.df <- data.frame()
-  dt.df <- dfs[[grep("Day_1$",names(dfs))]][1,]
+  dt.df <- dfs[[grep(paste0(firstDaygrep,"$"),names(dfs))]][1,]
 
   qvalue <- c()
   strsplit(names(dfs[1]),"_")[[1]][2]
@@ -46,7 +47,7 @@ SurvivalPercentage <- function(homedir = getwd())
   # that is age+1 is the next element in the data frame so solving the survival function
   # makes sense
   ul.df[,1] <- qvalue
-  sortedDt <- ul.df[order(ul.df$X),]
+  sortedDt <- ul.df[order(ul.df$Time),]
   # sortedDt <- sortedDt[-nrow(sortedDt),]
   survDt <- sortedDt
   survDt[1,] <- 100
@@ -66,23 +67,26 @@ SurvivalPercentage <- function(homedir = getwd())
       survDt[y,z]<-format(round(Sn,2),nsmall=2)
     }
     write.csv(survDt,file="Survival.csv",row.names = FALSE)
-    #write.csv (toplot, file.path(RAW, file = paste0(names(dfs)[[dfnum]], names(truewells)[ii], "-raw.csv")),row.names = FALSE)
-    #print("---------------------------------------------------------------")
   }
 }
 
-
-################################################ Survival Integral Code bits
-#if (ul > 5)
+#SurvivalIntegral(homedir=getwd(), file = "Survival.csv")
 #{
-#  xaxe<-as.vector(c(1:5))
-#  llonemean<-lm(yfilterd[1:5]~xaxe)$coefficients[2]
+#  ul.df <- read.csv(file = fileName)
+#
+#
+#}
 
-#  for (ll in 1:(ul-5))
-#  {
-#    llmean <- lm(yfilterd[(ll):(ll+4)]~xaxe)$coefficients[2]
-
-#    if (llmean > llonemean*fractionlowerlimit)
+# if (ul > 5)
+# {
+#   xaxe<-as.vector(c(1:5))
+#   llonemean<-lm(yfilterd[1:5]~xaxe)$coefficients[2]
+#
+#   for (ll in 1:(ul-5))
+#   {
+#     llmean <- lm(yfilterd[(ll):(ll+4)]~xaxe)$coefficients[2]
+#
+#     if (llmean > llonemean*fractionlowerlimit)
 #    {
 #      lowerlimit[ii - 1] <- low <- (ll+2)
 #      break
