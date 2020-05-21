@@ -76,6 +76,7 @@ create.plots<-function(locationofRAW=homedir)
   ul<-toplot[1,6] #define the upper limit as picked by OGA
   low<-toplot[1,7] #define the lower limit as picked by OGA
   rval<-toplot[1,8] #set rval equal to Rvalue as determined by OGA
+  # if data was ladder calibrated toplot$ycorrected>0 otherwise skip this step in plotting
   if(mean(toplot$ycorrected)==0)
   {
     ggplot() +
@@ -259,7 +260,7 @@ create.plots<-function(locationofRAW=homedir)
 
 ################################# Handling of bacterial contamination
 #bacteria = assumed doubling time of bacteria, doubling times less than this limit will be flagged as wells with bacterial contamination
-#laglimit= end of linear range of OD readings, correction ladder can't correct low OD values
+#laglimit= beginning of linear range of OD readings, correction ladder can't correct low OD values
 
 #####################################################################################################
 
@@ -288,21 +289,22 @@ OGA <-
     # call all libraries used in function
     #################### set arguments of butterworth filter
     bw <- signal::butter(stringencyfilt, frequencyfilt)
-  script<-"Analysis will being in 15 seconds \n. "
-
+  script<-"Analysis will begin in 15 seconds \n. "
+  #####################inform user how function will interact with data, and parameters chosen
   if(autoinput==TRUE)
-  {script<-paste(script,"\n All .csv files in current working directory will be automatically imported and analyzed. \n.")}
-  else{script<-paste(script,"\n Dataframe:",nestdataframe,"will be used for data analysis. \n.")
+  {script<-paste(script,"\n All .csv files in current working directory will be automatically imported and analyzed. \n.")}#input
+  else{script<-paste(script,"\n Dataframe:",nestdataframe,"will be used for data analysis. \n.") #input
   }
   if(ladder==TRUE)
-  {script<-paste(script,"\n An O.D calibration ladder will be created and applied to data from file:",laddername, "\n.")}
+  {script<-paste(script,"\n An O.D calibration ladder will be created and applied to data from file:",laddername, "\n.")} #tell user whether ladder will be constructed
   if(blank==TRUE)
-  {script<-paste(script,"\n Blank wells of name:",blankname, "will be subtracted from sample wells.\n.")}
+  {script<-paste(script,"\n Blank wells of name:",blankname, "will be subtracted from sample wells.\n.")} #tell user whether blanks will be subracted
   if(create.plot==TRUE)
-  {script<-paste(script,"\n Plots will be generated for all samples. \n.")}
+  {script<-paste(script,"\n Plots will be generated for all samples. \n.")} #tell user whether plots will be generated, this is time consuming
   if(stats==TRUE)
-  {script<-paste(script,"\n Statistics will be automatically applied to all inputs. \n.")}
-
+  {script<-paste(script,"\n Statistics will be automatically applied to all inputs. \n.")} #tell user whether they will be provided stats
+  script<-paste(script,"\n Wells which did not grow above,",LimitNoGrowth, "OD (minus the background) will be Flagged and removed, \n.") #tell user about flagging
+  script<-paste(script,"\n Wells with doubling times below,", bacteria, "minutes OD will be Flagged as bacterial contaminate and removed (if analyzing bacterial set=0.5), \n.") #tell user about flagging
   cat(script)
   Sys.sleep(15)
   print(paste("STARTING",homedir))
@@ -658,6 +660,7 @@ OGA <-
                 {y[interpol]<-highest
                 }
               }
+              ycorrected<-y
             } else
             {
               ycorrected <- y #else y is y
@@ -705,7 +708,6 @@ OGA <-
             {
               xaxe<-as.vector(c(1:5))
 
-              #find the first window in which the slope is greater than 0 (remember bioscreen errors negatively affect first data points)
 
               #find the first window in which the slope is lowerlimitslope greater than the first positive slope
               for (ll in fpoz:(ul-5))
@@ -727,9 +729,8 @@ OGA <-
               lowerlimit[ii-1] <- low <- 1
             }
             rm(fpoz)
-            #####################################################################################################
-            #calculate doubling time
-            # in R, log without a base is ln
+           ############################################################################## washing windows
+           #Housekeeping
 
             #all values of ycorrected must be greater than 0, if BLANK removal, or calibration made value less than 0 set=0.000001
             for(t in 1:length(ycorrected)) {
@@ -738,12 +739,18 @@ OGA <-
               }
             }
 
+            #prefer lower O.D limits above laglimit, this helps prevent aberant picking of first limit before linear response of plate reader
             ydd<-ycorrected[low:ul]
             finallower<-which(ydd>laglimit)[1]
             if(is.na(finallower)==FALSE)
             {
             ydd<-ydd[finallower:ul]
             }
+
+
+            #####################################################################################################
+            #calculate doubling time
+            # in R, log without a base is ln
             ydd <- log(ydd)
             xs <- c(1:(length(ydd)))
             xs<-xs*measureInterval
@@ -757,7 +764,7 @@ OGA <-
             #####################################################################################################
             #write out all SAMPLE values to SAMPLE_NAME.csv RAW for create.plot and downstream analysis
             if (ladder == FALSE)
-              #if there was a calibration ladder
+              #if there wasn't a calibration ladder, ycorrected should be zero (this tells create.plot to skip plotting corrected values)
             { ycorrected<-numeric(length(ymblk))
             }
               toplot <- as.data.frame(matrix(0, dim(truewells)[1], 8))
