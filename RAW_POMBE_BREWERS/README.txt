@@ -1,1 +1,0 @@
-Strains were grown in appropraite growth medium YPD for S. ceravisae, and YES for PR109 S. pombe these are labelled as "BLANK"
