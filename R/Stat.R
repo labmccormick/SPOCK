@@ -32,7 +32,6 @@ stats <- function(locationofresults=results,LimitNoGrowth=LimitNoGrowth)
             for (l in 1:length(colnames(daf)))
             {
               name[l]<-sub("\\..*", "", colnames(dfg)[1]) #take name of first SAMPLE and remove R inserted .# values
-              print(name)
               reps<-grep(name[l], colnames(dfg)) #find all SAMPLES with same name as column 1
               dtval<-(as.numeric(dfg[1,reps]))
               dtval[is.na(dtval)]<-0

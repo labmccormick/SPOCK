@@ -280,7 +280,7 @@ OGA <-
            maxinflectionpoint = 1.3,
            LimitNoGrowth=0.9,
            stats = TRUE,
-           bacteria = 70,
+           bacteria = 45,
            laglimit=0.1)
     #OGA declaration
     # Begin
@@ -288,7 +288,7 @@ OGA <-
     # call all libraries used in function
     #################### set arguments of butterworth filter
     bw <- signal::butter(stringencyfilt, frequencyfilt)
-  script<-"Are you ready to begin analyzing? \n. "
+  script<-"Analysis will being in 15 seconds \n. "
 
   if(autoinput==TRUE)
   {script<-paste(script,"\n All .csv files in current working directory will be automatically imported and analyzed. \n.")}
@@ -303,10 +303,9 @@ OGA <-
   if(stats==TRUE)
   {script<-paste(script,"\n Statistics will be automatically applied to all inputs. \n.")}
 
-  script<-paste(script,"\n Are you ready to begin analyzing (y/n)? \n ")
-  start<-readline(writeLines(script))
-  if(start=="y")
-  print(paste("STARTING IN",homedir))
+  print(script)
+  Sys.sleep(15)
+  print(paste("STARTING",homedir))
 
 
 
