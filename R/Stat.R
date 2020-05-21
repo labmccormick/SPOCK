@@ -24,15 +24,16 @@ stats <- function(locationofresults=results,LimitNoGrowth=LimitNoGrowth)
       xg<-which(as.numeric(daf[5,])>as.numeric(daf[4,]))
       daf<-daf[,xg]
       dfg<-daf
+      dfg[11,]<-colnames(dfg)
       name<-0
       average<-0
       sd<-0
       se<-0
-
+      dfg[11,]<-sub("\\..*", "", dfg[11,])
             for (l in 1:length(colnames(daf)))
             {
               name[l]<-sub("\\..*", "", colnames(dfg)[1]) #take name of first SAMPLE and remove R inserted .# values
-              reps<-grep(name[l], colnames(dfg)) #find all SAMPLES with same name as column 1
+              reps<-grep(paste0(name[l], "$"), dfg[11,]) #find all SAMPLES with same name as column 1
               dtval<-(as.numeric(dfg[1,reps]))
               dtval[is.na(dtval)]<-0
               dtval[is.infinite(dtval)]<-0
