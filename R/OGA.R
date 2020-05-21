@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+#<<<<<<< HEAD
 #Function to create ladder, the output of this function is a 3rd order polynomial, which is the best fit of the data
 #This function expects to find a CSV of name ladder.csv (or user defined name) in the current working directory, this should be a user generated file
 #####################################################################################################
@@ -850,7 +850,7 @@ OGA <-
     # End
   }
 
-=======
+#=======
 #Function to create ladder, the output of this function is a 3rd order polynomial, which is the best fit of the data
 #This function expects to find a CSV of name ladder.csv (or user defined name) in the current working directory, this should be a user generated file
 #####################################################################################################
@@ -1610,4 +1610,4 @@ OGA <-
     # End
   }
 
->>>>>>> e66eca733caa33b1b7a1b9cac4bca06a7318a08d
+#>>>>>>> e66eca733caa33b1b7a1b9cac4bca06a7318a08d

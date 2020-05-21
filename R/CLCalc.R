@@ -119,7 +119,7 @@ SurvivalPercentage <- function(homedir = getwd())
 # > library(stringr)
 # > str_extract(list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*[[:graph:]]*.csv"),"Day_[[:digit:]]*")
 # [1] "Day_14" "Day_1"  "Day_21" "Day_28" "Day_7
-=======
+#=======
 ###
 ### Commented out print statements are lazy man debugging, uncomment if you want to see the
 ### code as it goes
@@ -219,4 +219,4 @@ SurvivalPercentage <- function()
 #  lowerlimit <- low <- 1
 #  print("ZERO")
 #}
->>>>>>> 476587894ea26a93be89ba4aae15a8be149da400
+#>>>>>>> 476587894ea26a93be89ba4aae15a8be149da400
