@@ -48,13 +48,14 @@ SurvivalPercentage <- function(RAWpath = getwd(),firstDay = 1)
   # that is age+1 is the next element in the data frame so solving the survival function
   # makes sense
   ul.df[,1] <- qvalue
+  colnames(ul.df)[1]<-"Time"
   sortedDt <- ul.df[order(ul.df$Time),]
   # sortedDt <- sortedDt[-nrow(sortedDt),]
   survDt <- sortedDt
   survDt[1,] <- 100
   survDt[1,1] <- 1
   colnames(survDt) <- names(dfs[[1]])
-
+  View(survDt)
   for(z in 2:length(sortedDt[1,]))
   {
     #print(paste0("Results for ",colnames(ul.df)[z])
@@ -72,6 +73,7 @@ SurvivalIntegral <- function(homedir=getwd(), fileName = "Survival.csv")
 {
   setwd(homedir)
   ul.df <- read.csv(file = fileName)
+  colnames(ul.df)[1]<-"Time"
   ul.df <- ul.df[order(ul.df$Time),]
   SI.mat <- matrix(rep(0,length(names(ul.df))),nrow=1)
   count <- 1
@@ -93,7 +95,7 @@ SurvivalIntegral <- function(homedir=getwd(), fileName = "Survival.csv")
   colnames(SI.df) <- names(ul.df)
   ul.df <- rbind(ul.df,SI.df)
   ul.df[length(ul.df[,1]),1] <- 0
-  #write.csv(ul.df,file="Final.csv",row.names = FALSE)
+  write.csv(ul.df,file="Final.csv",row.names = FALSE)
   View(ul.df)
 
 }
