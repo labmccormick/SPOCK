@@ -3,7 +3,7 @@
 #locationofresults = path of results folder
 #LimitNoGrowth = Limit below which a well is defined as having no growth
 #####################################################################################################
-stats <- function(locationofresults=results,LimitNoGrowth=LimitNoGrowth)
+stats <- function(locationofresults="Results",LimitNoGrowth=0.9, rmflagged=TRUE)
 {
       setwd(locationofresults)
       stats <-
