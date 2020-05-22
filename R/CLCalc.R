@@ -14,19 +14,27 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd())
   homedir<-RAWpath<-survivalanalysis #passes homedir and RAWpath to SurvivalPercentage and SurvivalIntegral
   file_list <-
     list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*.csv")
+  empty_list <- vector(mode = "list", length = length(file_list))
   for (cleaning in 1:length(file_list))
   {
     df<-as.data.frame(read.csv(file_list[cleaning], row.names = 1, stringsAsFactors=FALSE))
-    xh<-which(df[7,]!="No Growth")
-    df<-df[,xh]
-    xg<-which(df[8,]!="Unexpected Growth")
-    df<-df[,xg]
-    xx<-which(df[10,]!="CONTAMINATION")
-    df<-df[,xx]
-    write.csv (df, file.path(survivalanalysis, file = paste0("results-flagged-wells-removed",file_list[cleaning])))
-    rm(df,xh,xg,xx)
-
+    empty_list[[cleaning]]<-which(df[7,]!="No Growth" & df[8,]!="Unexpected Growth" & df[10,]!="CONTAMINATION")
+    rm(df)
   }
+  xh<-Reduce(intersect, empty_list)
+  for (cleaning in 1:length(file_list))
+  {
+    df<-as.data.frame(read.csv(file_list[cleaning], row.names = 1, stringsAsFactors=FALSE))
+    df<-df[,xh]
+    write.csv (df, file.path(survivalanalysis, file = paste0("results-flagged-wells-removed",file_list[cleaning])))
+    rm(df)
+  }
+  rm(xh, file_list, empty_list)
+
+  SurvivalPercentage(RAWpath,firstDay)
+  SurvivalIntegral(homedir, fileName = "SurvivalPercentage.csv")
+
+
 }
 
 CLSCalc <- function(delta, doubleTime = 90*60)
@@ -88,11 +96,11 @@ SurvivalPercentage <- function(RAWpath = getwd(),firstDay = 1)
       #print(paste0(paste(paste0("Day ",paste(paste0(sortedDt[y,1],":"),Sn)),"based on:"),dt.df[1,z]))
       survDt[y,z]<-format(round(Sn,2),nsmall=2)
     }
-    write.csv(survDt,file="Survival.csv",row.names = FALSE)
+    write.csv(survDt,file="SurvivalPercentage.csv",row.names = FALSE)
   }
 }
 
-SurvivalIntegral <- function(homedir=getwd(), fileName = "Survival.csv")
+SurvivalIntegral <- function(homedir=getwd(), fileName = "SurvivalPercentage.csv")
 {
   setwd(homedir)
   ul.df <- read.csv(file = fileName)
@@ -118,7 +126,7 @@ SurvivalIntegral <- function(homedir=getwd(), fileName = "Survival.csv")
   colnames(SI.df) <- names(ul.df)
   ul.df <- rbind(ul.df,SI.df)
   ul.df[length(ul.df[,1]),1] <- 0
-  write.csv(ul.df,file="Final.csv",row.names = FALSE)
+  write.csv(ul.df,file="SurvivalIntegral.csv",row.names = FALSE)
   View(ul.df)
 
 }
