@@ -302,8 +302,8 @@ OGA <-
   {script<-paste(script,"\n Plots will be generated for all samples. \n.")} #tell user whether plots will be generated, this is time consuming
   if(stats==TRUE)
   {script<-paste(script,"\n Statistics will be automatically applied to all inputs. \n.")} #tell user whether they will be provided stats
-  script<-paste(script,"\n Wells which did not grow above,",LimitNoGrowth, "OD (minus the background) will be Flagged and removed, \n.") #tell user about flagging
-  script<-paste(script,"\n Wells with doubling times below,", bacteria, "minutes OD will be Flagged as bacterial contaminate and removed (if analyzing bacterial set=0.5), \n.") #tell user about flagging
+  script<-paste(script,"\n Wells which did not grow above",LimitNoGrowth, "OD (minus the background) will be flagged NOGROWTH and removed, \n.") #tell user about flagging
+  script<-paste(script,"\n Wells with doubling times below", bacteria, "minutes OD will be flagged as CONTAMINATED and removed (if analyzing bacterial set=0.5), \n.") #tell user about flagging
   cat(script)
   Sys.sleep(15)
   print(paste("STARTING",homedir))
