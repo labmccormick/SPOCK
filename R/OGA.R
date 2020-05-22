@@ -260,7 +260,7 @@ create.plots<-function(locationofRAW=homedir)
 ################################# Handling of bacterial contamination
 #bacteria = assumed doubling time of bacteria, doubling times less than this limit will be flagged as wells with bacterial contamination
 #laglimit= beginning of linear range of OD readings, correction ladder can't correct low OD values
-
+#rmflagged=TRUE, remove wells flagged as contaminates, no growth, or unexpected growth
 #####################################################################################################
 
 OGA <-
@@ -281,7 +281,8 @@ OGA <-
            LimitNoGrowth=0.9,
            stats = TRUE,
            bacteria = 45,
-           laglimit=0.1)
+           laglimit=0.1,
+           rmflagged=TRUE)
     #OGA declaration
     # Begin
   {
@@ -842,7 +843,7 @@ OGA <-
 
     if(stats)
     {
-      stats(results,LimitNoGrowth)
+      stats(results,LimitNoGrowth,rmflagged)
     }
 
     #####################################################################################################

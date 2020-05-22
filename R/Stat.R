@@ -18,11 +18,14 @@ stats <- function(locationofresults=results,LimitNoGrowth=LimitNoGrowth)
       #####################################################################################################
       #Housekeeping
       daf<-as.data.frame(read.csv(file_list_tostat[analysis], row.names = 1, stringsAsFactors=FALSE))
+      if(rmflagged) #remove flagged wells if =TRUE
+      {
       toolow<-(LimitNoGrowth-(as.numeric(daf[9,1])))
       xh<-which(as.numeric(daf[6,])>toolow)
       daf<-daf[,xh]
       xg<-which(as.numeric(daf[5,])>as.numeric(daf[4,]))
       daf<-daf[,xg]
+      }
       dfg<-daf
       dfg[11,]<-colnames(dfg)
       name<-0
