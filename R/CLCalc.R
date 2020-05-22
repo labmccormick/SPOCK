@@ -6,6 +6,29 @@
 
 ### this just calculates the formula as defined in paper (need paper reference...)
 
+SurvivalCalc<- function(firstDay = 1, resultspath = getwd())
+{
+  setwd(resultspath)#set directory to resultspath (location of raw results files)
+  survivalanalysis <-paste0(resultspath, "/Survivalanalysis")#create survivalanalysis which identifies the path for the survival analysis dir
+  dir.create(paste0("Survivalanalysis"), showWarnings = FALSE) #creates directory Survivalanalysis within current working directory
+  homedir<-RAWpath<-survivalanalysis #passes homedir and RAWpath to SurvivalPercentage and SurvivalIntegral
+  file_list <-
+    list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*.csv")
+  for (cleaning in 1:length(file_list))
+  {
+    df<-as.data.frame(read.csv(file_list[cleaning], row.names = 1, stringsAsFactors=FALSE))
+    xh<-which(df[7,]!="No Growth")
+    df<-df[,xh]
+    xg<-which(df[8,]!="Unexpected Growth")
+    df<-df[,xg]
+    xx<-which(df[10,]!="CONTAMINATION")
+    df<-df[,xx]
+    write.csv (df, file.path(survivalanalysis, file = paste0("results-flagged-wells-removed",file_list[cleaning])))
+    rm(df,xh,xg,xx)
+
+  }
+}
+
 CLSCalc <- function(delta, doubleTime = 90*60)
 {
   Sn = 100* (1 / (2^(delta*15 / doubleTime)))
@@ -18,10 +41,10 @@ SurvivalPercentage <- function(RAWpath = getwd(),firstDay = 1)
 {
   setwd(RAWpath)
   file_list <-
-    list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*.csv") #list all files in current working directory with extension.csv
+    list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*.csv") #list all files in current working directory with extension.csv and Day notation
   print(file_list)
   for (i in 1:length (file_list))
-    #loop 1:x total number of CSV files in directory (ignoring ladder.csv)
+    #loop 1:x total number of CSV files in directory
   {
     assign(paste0(sub('.csv', '', basename(file_list[i]))), read.csv(file_list[i])) #read .csv into dataframe with the same name as original csv without extension.csv
   }
@@ -32,7 +55,7 @@ SurvivalPercentage <- function(RAWpath = getwd(),firstDay = 1)
 
   ul.df <- data.frame()
   dt.df <- dfs[[grep(paste0(firstDaygrep,"$"),names(dfs))]][1,]
-
+  View(dt.df)
   qvalue <- c()
   strsplit(names(dfs[1]),"_")[[1]][2]
   names(dfs[[1]])
