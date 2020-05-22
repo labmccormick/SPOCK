@@ -55,12 +55,9 @@ SurvivalPercentage <- function(RAWpath = getwd(),firstDay = 1)
   survDt[1,1] <- 1
   colnames(survDt) <- names(dfs[[1]])
 
-  # SI will be used for the survival integral once this is working
-
   for(z in 2:length(sortedDt[1,]))
   {
-    #print(paste0("Results for ",colnames(ul.df)[z]))
-    SI = 0
+    #print(paste0("Results for ",colnames(ul.df)[z])
     for(y in 2:length(qvalue))
     {
       Sn <-CLSCalc((as.numeric(sortedDt[y,z])-as.numeric(sortedDt[1,z])),dt.df[1,z])
@@ -75,6 +72,9 @@ SurvivalIntegral <- function(homedir=getwd(), fileName = "Survival.csv")
 {
   setwd(homedir)
   ul.df <- read.csv(file = fileName)
+  ul.df <- ul.df[order(ul.df$Time),]
+  SI.mat <- matrix(rep(0,length(names(ul.df))),nrow=1)
+  count <- 1
   for(name in names(ul.df))
   {
     SI <- 0
@@ -86,7 +86,15 @@ SurvivalIntegral <- function(homedir=getwd(), fileName = "Survival.csv")
       print(SI)
     }
     print(paste0(paste0(paste0("Final SI for ",name),":"),SI))
+    SI.mat[count]<-SI
+    count <- count + 1
   }
+  SI.df <- data.frame(SI.mat)
+  colnames(SI.df) <- names(ul.df)
+  ul.df <- rbind(ul.df,SI.df)
+  ul.df[length(ul.df[,1]),1] <- 0
+  #write.csv(ul.df,file="Final.csv",row.names = FALSE)
+  View(ul.df)
 
 }
 
