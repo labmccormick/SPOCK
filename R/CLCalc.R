@@ -6,7 +6,7 @@
 
 ### this just calculates the formula as defined in paper (need paper reference...)
 
-SurvivalCalc<- function(firstDay = 1, resultspath = getwd())
+SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, stats=TRUE)
 {
   setwd(resultspath)#set directory to resultspath (location of raw results files)
   survivalanalysis <-paste0(resultspath, "/Survivalanalysis")#create survivalanalysis which identifies the path for the survival analysis dir
@@ -15,6 +15,8 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd())
   file_list <-
     list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*.csv")
   empty_list <- vector(mode = "list", length = length(file_list))
+  if(rmflagged)
+  {
   for (cleaning in 1:length(file_list))
   {
     df<-as.data.frame(read.csv(file_list[cleaning], row.names = 1, stringsAsFactors=FALSE))
@@ -30,9 +32,22 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd())
     rm(df)
   }
   rm(xh, file_list, empty_list)
+  }else
+  {  for (cleaning in 1:length(file_list))
+      { df<-as.data.frame(read.csv(file_list[cleaning], row.names = 1, stringsAsFactors=FALSE))
+    write.csv (df, file.path(survivalanalysis, file = paste0("results-flagged-wells-NOT-removed",file_list[cleaning])))
+    rm(df)
+      }
+
+  }
+
 
   SurvivalPercentage(RAWpath,firstDay)
   SurvivalIntegral(homedir, fileName = "SurvivalPercentage.csv")
+
+  if(stats)
+  {statsCLS()}
+
 
 
 }
