@@ -26,9 +26,10 @@ SurvivalPercentage <- function(RAWpath = getwd(),firstDay = 1)
     assign(paste0(sub('.csv', '', basename(file_list[i]))), read.csv(file_list[i])) #read .csv into dataframe with the same name as original csv without extension.csv
   }
   dfs <-
-    Filter(f = function(x) is(x, "data.frame"), mget(ls())) #create nested list of all dataframes
+    Filter(f = function(x) is(x, "data.frame"), mget(ls(pattern="_Day_"))) #create nested list of all dataframes
   # This creates a data frame that specifically holds the upper limit(ul.df) and doubling time(dt.df)
   firstDaygrep = paste0("Day_",firstDay)
+
   ul.df <- data.frame()
   dt.df <- dfs[[grep(paste0(firstDaygrep,"$"),names(dfs))]][1,]
 
@@ -70,12 +71,12 @@ SurvivalPercentage <- function(RAWpath = getwd(),firstDay = 1)
   }
 }
 
-#SurvivalIntegral(homedir=getwd(), file = "Survival.csv")
-#{
-#  ul.df <- read.csv(file = fileName)
-#
-#
-#}
+SurvivalIntegral <- function(homedir=getwd(), file = "Survival.csv")
+{
+  setwd(homedir)
+  ul.df <- read.csv(file = fileName)
+
+}
 
 # if (ul > 5)
 # {
