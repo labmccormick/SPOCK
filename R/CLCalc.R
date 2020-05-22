@@ -71,10 +71,22 @@ SurvivalPercentage <- function(RAWpath = getwd(),firstDay = 1)
   }
 }
 
-SurvivalIntegral <- function(homedir=getwd(), file = "Survival.csv")
+SurvivalIntegral <- function(homedir=getwd(), fileName = "Survival.csv")
 {
   setwd(homedir)
   ul.df <- read.csv(file = fileName)
+  for(name in names(ul.df))
+  {
+    SI <- 0
+    print(paste("Computing: ",name))
+    print(paste("Starting SI reset",SI))
+    for(n in 2:length(ul.df[,1]))
+    {
+      SI <- SI+((((ul.df[n,name])+ul.df[n-1,name])/2)*(ul.df[n,1]-ul.df[n-1,1]))
+      print(SI)
+    }
+    print(paste0(paste0(paste0("Final SI for ",name),":"),SI))
+  }
 
 }
 
