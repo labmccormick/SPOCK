@@ -52,9 +52,15 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
 
 }
 
+<<<<<<< HEAD
 CLSCalc <- function(delta, measureInterval=15, doubleTime = 90*60)
 {
   Sn = 100* (1 / (2^((delta*measureInterval) / doubleTime)))
+=======
+CLSCalc <- function(delta,measureInterval=15, doubleTime = 90*60)
+{
+  Sn = 100* (1 / (2^(delta*measureInterval / doubleTime)))
+>>>>>>> 63373811be0860e081b40b21b44ce3fd332e97b1
   return(Sn)
 }
 
@@ -107,7 +113,11 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
     #print(paste0("Results for ",colnames(ul.df)[z])
     for(y in 2:length(qvalue))
     {
+<<<<<<< HEAD
       Sn <-CLSCalc((as.numeric(sortedDt[y,z])-as.numeric(sortedDt[1,z])), measureInterval, dt.df[1,z] )
+=======
+      Sn <-CLSCalc((as.numeric(sortedDt[y,z])-as.numeric(sortedDt[1,z])),dt.df[1,z], measureInterval)
+>>>>>>> 63373811be0860e081b40b21b44ce3fd332e97b1
       #print(paste0(paste(paste0("Day ",paste(paste0(sortedDt[y,1],":"),Sn)),"based on:"),dt.df[1,z]))
       survDt[y,z]<-format(round(Sn,2),nsmall=2)
     }
