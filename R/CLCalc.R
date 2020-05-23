@@ -52,15 +52,15 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
 
 }
 
-CLSCalc <- function(delta, doubleTime = 90*60)
+CLSCalc <- function(delta,measureInterval=15, doubleTime = 90*60)
 {
-  Sn = 100* (1 / (2^(delta*15 / doubleTime)))
+  Sn = 100* (1 / (2^(delta*measureInterval / doubleTime)))
   return(Sn)
 }
 
 #setwd("/home/fitz/code/OGA-test/Results/") # this is the location of the results csv files
 
-SurvivalPercentage <- function(RAWpath = getwd(),firstDay = 1)
+SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=15)
 {
   setwd(RAWpath)
   file_list <-
@@ -107,7 +107,7 @@ SurvivalPercentage <- function(RAWpath = getwd(),firstDay = 1)
     #print(paste0("Results for ",colnames(ul.df)[z])
     for(y in 2:length(qvalue))
     {
-      Sn <-CLSCalc((as.numeric(sortedDt[y,z])-as.numeric(sortedDt[1,z])),dt.df[1,z])
+      Sn <-CLSCalc((as.numeric(sortedDt[y,z])-as.numeric(sortedDt[1,z])),dt.df[1,z], measureInterval)
       #print(paste0(paste(paste0("Day ",paste(paste0(sortedDt[y,1],":"),Sn)),"based on:"),dt.df[1,z]))
       survDt[y,z]<-format(round(Sn,2),nsmall=2)
     }
