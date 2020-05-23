@@ -214,52 +214,63 @@ create.plots<-function(locationofRAW=homedir)
 
 
 #####################################################################################################
-#BEGIN FUNCTION OGA (OUTGROWTH ANALYSIS)
-#OGA calculates doubling times by subtracting blank wells, smoothing high frequency noise by a Butterworth filter,
-#picking the second limit by defining the inflection point of exponential growth as determined by the 1st derivative (diff) ul,
-#and first limit by a heuristically defined slope change
-#the doubling time is then calculated between these points
+#' BEGIN FUNCTION OGA (OUTGROWTH ANALYSIS)
+#' OGA calculates doubling times by subtracting blank wells, smoothing high frequency noise by a Butterworth filter,
+#' picking the second limit by defining the inflection point of exponential growth as determined by the 1st derivative (diff) ul,
+#' and first limit by a heuristically defined slope change
+#' the doubling time is then calculated between these points
 
 ##OGA arguments
+#' full list of OGA arguments
 ################################# Input Management
-# autoinput=TRUE then automatically read in all .csv in working directory for OGA analysis
-# .csv are autoinputed into DFS, else OGA expects to find a nested DATAFRAME named dfs
-#nestdataframe is called if autoinput=FALSE, this is a nested DATAFRAME which is user created
-#homedir=getwd() directory which contains .csv files to be analzed, default is current WD
+#' Input management
+#' autoinput=TRUE then automatically read in all .csv in working directory for OGA analysis
+#' .csv are autoinputed into DFS, else OGA expects to find a nested DATAFRAME named dfs
+#' nestdataframe is called if autoinput=FALSE, this is a nested DATAFRAME which is user created
+#' homedir=getwd() directory which contains .csv files to be analzed, default is current WD
 
 ################################# Ladder specifications
-#ladder=TRUE tells OGA to expect a ladder file and to apply it
-#laddername=to the name of the ladder.csv file
-#repladder=number of replicates in the ladder (see example ladder)
+#' Ladder specifications
+#' ladder=TRUE tells OGA to expect a ladder file and to apply it
+#' laddername=to the name of the ladder.csv file
+#' repladder=number of replicates in the ladder (see example ladder)
 
 ################################# Handling of blanks
-#blank=TRUE tells OGA to expect to remove blanks
-#blankname=the name of blank wells in .csv file (default is BLANK)
+#' How blanks are handled
+#' blank=TRUE tells OGA to expect to remove blanks
+#' blankname=the name of blank wells in .csv file (default is BLANK)
+#' please note that blank names are what is in the CSV to represent blanks
+#' and this is case sensitive.
 ### blank name is what's in the CSV to represent blanks, this is CASE SENSITIVE
 
 ################################# Handling of plotting
-#create.plot=TRUE plots for all growth curves will be written out as .png
+#' Handling of plots
+#' create.plot=TRUE plots for all growth curves will be written out as .png
 
 ################################# Butterworth Filter Arguments
-#stringenctfilt=Stringency of filter applied by butterworth method (order of butterworth filter)
-#frequencyfilt=frequency above which to filter,
+#' Additional arguments for Butterworth filter
+#' stringenctfilt=Stringency of filter applied by butterworth method (order of butterworth filter)
+#' frequencyfilt=frequency above which to filter,
 
 #### by plotting the absolute value of fft transformed data you can visualize where the underlying noise is within the dataset ####
 
 ################################# Doubling time calculation arguments
-#measureInterval is the time between sampling times t in minutes(default is 15 minutes)
-#fractionlowerlimit is the heuristically defined fractional value above which growth is defined as exponention
-#maxinflectionpoint defines the end of where exponential growth would be expected in OD. this is used to eliminate wells
-#with exponential growth following yeast growth phase (contaminates expected)
-#LimitNoGrowth limit below which a well is defined as having no growth, or insufficient data for analysis (Highest O.D value- Average blank at all time points)
+#' Arguments for doubling time calculation
+#' measureInterval is the time between sampling times t in minutes(default is 15 minutes)
+#' fractionlowerlimit is the heuristically defined fractional value above which growth is defined as exponention
+#' maxinflectionpoint defines the end of where exponential growth would be expected in OD. this is used to eliminate wells
+#' with exponential growth following yeast growth phase (contaminates expected)
+#' LimitNoGrowth limit below which a well is defined as having no growth, or insufficient data for analysis (Highest O.D value- Average blank at all time points)
 ####defined by slope at time n divided by slope at time 1 or tn/t1   ####
 
 ################################# Handling of statistics
-#stats = TRUE the mean, SD, and SEM of each sample with same name will be calculated
+#' Stats handling
+#' stats = TRUE the mean, SD, and SEM of each sample with same name will be calculated
 
 ################################# Handling of bacterial contamination
-#bacteria = assumed doubling time of bacteria, doubling times less than this limit will be flagged as wells with bacterial contamination
-#laglimit= beginning of linear range of OD readings, correction ladder can't correct low OD values
+#' Arguments for dealing with bacterial contamination
+#' bacteria = assumed doubling time of bacteria, doubling times less than this limit will be flagged as wells with bacterial contamination
+#' laglimit= beginning of linear range of OD readings, correction ladder can't correct low OD values
 
 #####################################################################################################
 

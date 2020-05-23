@@ -93,9 +93,7 @@ SurvivalIntegral <- function(homedir=getwd(), fileName = "Survival.csv")
   colnames(SI.df) <- names(ul.df)
   ul.df <- rbind(ul.df,SI.df)
   ul.df[length(ul.df[,1]),1] <- 0
-  #write.csv(ul.df,file="Final.csv",row.names = FALSE)
-  View(ul.df)
-
+  write.csv(ul.df,file="Final.csv",row.names = FALSE)
 }
 
 # if (ul > 5)
