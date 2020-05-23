@@ -14,6 +14,7 @@ Imports:
  ggplot2,
  rsq,
  signal,
+ pracma,
  methods
 License: GPL-3
 LazyData: true
