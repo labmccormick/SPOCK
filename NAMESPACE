@@ -1,4 +1,7 @@
 exportPattern("^[[:alpha:]]+")
 importFrom("methods", "is")
 importFrom("stats", "lm", "sd")
-importFrom("utils", "read.csv", "setTxtProgressBar", "txtProgressBar","write.csv")
+importFrom("utils", "read.csv", "setTxtProgressBar", "txtProgressBar","write.csv","View")
+import("ggplot2")
+import("signal")
+import("rsq")
