@@ -6,7 +6,7 @@
 #' be a user generated file. See Example file for format of ladder.csv
 #' @param laddername Name of the csv file that contains your calibration ladder data.
 #' @param repladder number of technical replicates in your calibration ladder
-#' @return Returns a calibration ladder for OGA() analysis.
+#' @return Returns a calibration ladder for OGA() analysis. WASSUP
 #####################################################################################################
 ######################################################################################################
 ladderCreate <- function(laddername = "ladder.csv",
