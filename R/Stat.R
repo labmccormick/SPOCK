@@ -13,6 +13,12 @@
 #' @param rmflagged This determines if flagged wells are removed from statistics. default=TRUE
 statsDT <- function(locationofresults="Results",LimitNoGrowth=0.9, rmflagged=TRUE)
 {
+      if(!dir.exists(locationofresults))
+      {
+        print(paste0(paste0("Directory: ", locationofresults)," not found, confirm it exists and you have permission to access it."))
+        return(-1)
+      }
+
       setwd(locationofresults)
       stats <-
         paste0(locationofresults, "/Replicate_Stats")#create variable replicate_states which identifies the path for the replicate_stats directory

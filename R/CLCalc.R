@@ -19,12 +19,22 @@
 
 SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, statsCLS=TRUE, measureInterval=15)
 {
+  if(!dir.exists(resultspath))
+  {
+    print(paste0(paste0("Directory: ", resultspath)," not found, confirm it exists and you have permission to access it."))
+    return(-1)
+  }
   setwd(resultspath)                     #set directory to resultspath (location of raw results files)
   survivalanalysis <-paste0(resultspath, "/Survivalanalysis")     #create survivalanalysis which identifies the path for the survival analysis dir
   dir.create(paste0("Survivalanalysis"), showWarnings = FALSE)    #creates directory Survivalanalysis within current working directory
   homedir<-RAWpath<-survivalanalysis                              #passes homedir and RAWpath to SurvivalPercentage and SurvivalIntegral
   file_list <-
     list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*.csv")
+  if(length(file_list)==0)
+  {
+    print(paste0("No csv files found to analyze in directory ",resultspath))
+    return(-1)
+  }
   empty_list <- vector(mode = "list", length = length(file_list))
   if(rmflagged)
   {
@@ -88,6 +98,12 @@ CLSCalc <- function(delta, measureInterval=15, doubleTime = 90*60)
 #' @param measureInterval Time between each OD measurement in minutes. Default = 15
 SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=15)
 {
+
+  if(!dir.exists(RAWpath))
+  {
+    print(paste0(paste0("Directory: ", RAWpath)," not found, confirm it exists and you have permission to access it."))
+    return(-1)
+  }
   setwd(RAWpath)
   file_list <-
     list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*.csv") #list all files in current working directory with extension.csv and Day notation
