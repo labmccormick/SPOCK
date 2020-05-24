@@ -6,6 +6,9 @@
 \usage{
 create.plots(locationofRAW = homedir)
 }
+\arguments{
+\item{locationofRAW}{path to the RAW data files generated.}
+}
 \description{
 This function generates plots from the run of OGA, it wants a path to the RAW
 files generated from OGA

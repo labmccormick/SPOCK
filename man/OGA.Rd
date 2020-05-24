@@ -2,7 +2,7 @@
 % Please edit documentation in R/OGA.R
 \name{OGA}
 \alias{OGA}
-\title{BEGIN FUNCTION OGA (OUTGROWTH ANALYSIS)}
+\title{OGA (Outgrowth Analysis)}
 \usage{
 OGA(
   autoinput = TRUE,
@@ -25,53 +25,48 @@ OGA(
   laglimit = 0.1
 )
 }
-\description{
-OGA calculates doubling times by subtracting blank wells, smoothing high frequency noise by a Butterworth filter,
-picking the second limit by defining the inflection point of exponential growth as determined by the 1st derivative (diff) ul,
-and first limit by a heuristically defined slope change
-the doubling time is then calculated between these points
+\arguments{
+\item{autoinput}{BOOL parameter, if TRUE then automatically read in all .csv files for outgrowth
+analysis. these csv files are autoinputed into DFS, otherwise OGA expect to find a value for dfs.}
+
+\item{nestdataframe}{if autoinput is FALSE then you need to pass instead a nested dataframe to analyze
+to this paramater.}
+
+\item{homedir}{Home Directory}
+
+\item{ladder}{ladder}
+
+\item{laddername}{Name of ladder}
+
+\item{repladder}{Number of replicates in ladder}
+
+\item{blank}{Do you have blanks in the csv files (TRUE/FALSE)}
+
+\item{blankname}{Name used for blanks, this name is case sensitive and must match exactly with file.}
+
+\item{create.plot}{Should we produce plots? (TRUE/FALSE)}
+
+\item{stringencyfilt}{What filter to use for stringency.}
+
+\item{frequencyfilt}{What filter to use for frequency.}
+
+\item{measureInterval}{Time between measurements.}
+
+\item{lowerlimitslope}{What is the lower limit for the slope to calculate.}
+
+\item{maxinflectionpoint}{What is the maximum inflection point.}
+
+\item{LimitNoGrowth}{What is the OD limit to signal no growth detected.}
+
+\item{stats}{Do you want to run stats (TRUE/FALSE)}
+
+\item{bacteria}{Should OGA flag potential bacterial growth.}
+
+\item{laglimit}{Limit to how far until you declare a lag state.}
 }
-\details{
-full list of OGA arguments
-Input management
-
-autoinput=TRUE then automatically read in all .csv in working directory for OGA analysis
-.csv are autoinputed into DFS, else OGA expects to find a nested DATAFRAME named dfs
-nestdataframe is called if autoinput=FALSE, this is a nested DATAFRAME which is user created
-homedir=getwd() directory which contains .csv files to be analzed, default is current WD
-Ladder specifications
-
-ladder=TRUE tells OGA to expect a ladder file and to apply it
-laddername=to the name of the ladder.csv file
-repladder=number of replicates in the ladder (see example ladder)
-How blanks are handled
-
-blank=TRUE tells OGA to expect to remove blanks
-blankname=the name of blank wells in .csv file (default is BLANK)
-please note that blank names are what is in the CSV to represent blanks
-and this is case sensitive.
-Handling of plots
-
-create.plot=TRUE plots for all growth curves will be written out as .png
-Additional arguments for Butterworth filter
-
-stringenctfilt=Stringency of filter applied by butterworth method (order of butterworth filter)
-frequencyfilt=frequency above which to filter.
-Arguments for doubling time calculation
-
-measureInterval is the time between sampling times t in minutes(default is 15 minutes)
-fractionlowerlimit is the heuristically defined fractional value above which growth is defined as exponention
-maxinflectionpoint defines the end of where exponential growth would be expected in OD. this is used to eliminate wells
-with exponential growth following yeast growth phase (contaminates expected)
-LimitNoGrowth limit below which a well is defined as having no growth, or
-insufficient data for analysis (Highest O.D value- Average blank at all time points)
-Stats handling
-
-stats = TRUE the mean, SD, and SEM of each sample with same name will be calculated
-Arguments for dealing with bacterial contamination
-
-bacteria = assumed doubling time of bacteria, doubling times less than this
-limit will be flagged as wells with bacterial contamination
-laglimit= beginning of linear range of OD readings, correction
-ladder can't correct low OD values
+\description{
+OGA calculates doubling times by subtracting blank wells, smoothing high frequency noise by a
+Butterworth filter, picking the second limit by defining the inflection point of exponential
+growth as determined by the 1st derivative (diff) ul, and first limit by a heuristically
+defined slope change the doubling time is then calculated between these points.
 }

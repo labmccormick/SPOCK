@@ -1,9 +1,12 @@
 #' ladderCreate
 #'
 #' Function to create ladder, the output of this function is a 3rd order polynomial,
-#'  which is the best fit of the data. This function expects to find a CSV of name
-#'  ladder.csv (or user defined name) in the current working directory, this should
-#'  be a user generated file
+#' which is the best fit of the data. This function expects to find a CSV of name
+#' ladder.csv (or user defined name) in the current working directory, this should
+#' be a user generated file
+#' @param laddername Name of the csv file that contains your ladder data.
+#' @param repladder number of replicates in your ladder
+#' @return Returns a created ladder.
 #####################################################################################################
 ######################################################################################################
 ladderCreate <- function(laddername = "ladder.csv",
@@ -53,7 +56,7 @@ ladderCreate <- function(laddername = "ladder.csv",
 #'
 #' This function generates plots from the run of OGA, it wants a path to the RAW
 #' files generated from OGA
-#'
+#' @param locationofRAW path to the RAW data files generated.
 create.plots<-function(locationofRAW=homedir)
 {
   # library(ggplot2)  ### This throws an error for package building
@@ -222,76 +225,95 @@ create.plots<-function(locationofRAW=homedir)
 
 
 #####################################################################################################
-#' BEGIN FUNCTION OGA (OUTGROWTH ANALYSIS)
+#' OGA (Outgrowth Analysis)
 #'
-#' OGA calculates doubling times by subtracting blank wells, smoothing high frequency noise by a Butterworth filter,
-#' picking the second limit by defining the inflection point of exponential growth as determined by the 1st derivative (diff) ul,
-#' and first limit by a heuristically defined slope change
-#' the doubling time is then calculated between these points
-#'
-
+#' OGA calculates doubling times by subtracting blank wells, smoothing high frequency noise by a
+#' Butterworth filter, picking the second limit by defining the inflection point of exponential
+#' growth as determined by the 1st derivative (diff) ul, and first limit by a heuristically
+#' defined slope change the doubling time is then calculated between these points.
+#' @param autoinput BOOL parameter, if TRUE then automatically read in all .csv files for outgrowth
+#' analysis. these csv files are autoinputed into DFS, otherwise OGA expect to find a value for dfs.
+#' @param nestdataframe if autoinput is FALSE then you need to pass instead a nested dataframe to analyze
+#' to this paramater.
+#' @param homedir Home Directory
+#' @param ladder ladder
+#' @param laddername Name of ladder
+#' @param repladder Number of replicates in ladder
+#' @param blank Do you have blanks in the csv files (TRUE/FALSE)
+#' @param blankname Name used for blanks, this name is case sensitive and must match exactly with file.
+#' @param create.plot Should we produce plots? (TRUE/FALSE)
+#' @param stringencyfilt What filter to use for stringency.
+#' @param frequencyfilt What filter to use for frequency.
+#' @param measureInterval Time between measurements.
+#' @param lowerlimitslope What is the lower limit for the slope to calculate.
+#' @param maxinflectionpoint What is the maximum inflection point.
+#' @param LimitNoGrowth What is the OD limit to signal no growth detected.
+#' @param stats Do you want to run stats (TRUE/FALSE)
+#' @param bacteria Should OGA flag potential bacterial growth.
+#' @param laglimit Limit to how far until you declare a lag state.
+####################### Convert all of this to the param above - also maybe have an example or 2.
 ##OGA arguments
-#' full list of OGA arguments
+# full list of OGA arguments
 ################################# Input Management
-#' Input management
-#'
-#' autoinput=TRUE then automatically read in all .csv in working directory for OGA analysis
-#' .csv are autoinputed into DFS, else OGA expects to find a nested DATAFRAME named dfs
-#' nestdataframe is called if autoinput=FALSE, this is a nested DATAFRAME which is user created
-#' homedir=getwd() directory which contains .csv files to be analzed, default is current WD
+# Input management
+#
+# autoinput=TRUE then automatically read in all .csv in working directory for OGA analysis
+# .csv are autoinputed into DFS, else OGA expects to find a nested DATAFRAME named dfs
+# nestdataframe is called if autoinput=FALSE, this is a nested DATAFRAME which is user created
+# homedir=getwd() directory which contains .csv files to be analzed, default is current WD
 
 ################################# Ladder specifications
-#' Ladder specifications
-#'
-#' ladder=TRUE tells OGA to expect a ladder file and to apply it
-#' laddername=to the name of the ladder.csv file
-#' repladder=number of replicates in the ladder (see example ladder)
+# Ladder specifications
+#
+# ladder=TRUE tells OGA to expect a ladder file and to apply it
+# laddername=to the name of the ladder.csv file
+# repladder=number of replicates in the ladder (see example ladder)
 
 ################################# Handling of blanks
-#' How blanks are handled
-#'
-#' blank=TRUE tells OGA to expect to remove blanks
-#' blankname=the name of blank wells in .csv file (default is BLANK)
-#' please note that blank names are what is in the CSV to represent blanks
-#' and this is case sensitive.
+# How blanks are handled
+#
+# blank=TRUE tells OGA to expect to remove blanks
+# blankname=the name of blank wells in .csv file (default is BLANK)
+# please note that blank names are what is in the CSV to represent blanks
+# and this is case sensitive.
 ### blank name is what's in the CSV to represent blanks, this is CASE SENSITIVE
 
 ################################# Handling of plotting
-#' Handling of plots
-#'
-#' create.plot=TRUE plots for all growth curves will be written out as .png
+# Handling of plots
+#
+# create.plot=TRUE plots for all growth curves will be written out as .png
 
 ################################# Butterworth Filter Arguments
-#' Additional arguments for Butterworth filter
-#'
-#' stringenctfilt=Stringency of filter applied by butterworth method (order of butterworth filter)
-#' frequencyfilt=frequency above which to filter.
+# Additional arguments for Butterworth filter
+#
+# stringenctfilt=Stringency of filter applied by butterworth method (order of butterworth filter)
+# frequencyfilt=frequency above which to filter.
 
 #### by plotting the absolute value of fft transformed data you can visualize where the underlying noise is within the dataset ####
 
 ################################# Doubling time calculation arguments
-#' Arguments for doubling time calculation
-#'
-#' measureInterval is the time between sampling times t in minutes(default is 15 minutes)
-#' fractionlowerlimit is the heuristically defined fractional value above which growth is defined as exponention
-#' maxinflectionpoint defines the end of where exponential growth would be expected in OD. this is used to eliminate wells
-#' with exponential growth following yeast growth phase (contaminates expected)
-#' LimitNoGrowth limit below which a well is defined as having no growth, or
-#' insufficient data for analysis (Highest O.D value- Average blank at all time points)
+# Arguments for doubling time calculation
+#
+# measureInterval is the time between sampling times t in minutes(default is 15 minutes)
+# fractionlowerlimit is the heuristically defined fractional value above which growth is defined as exponention
+# maxinflectionpoint defines the end of where exponential growth would be expected in OD. this is used to eliminate wells
+# with exponential growth following yeast growth phase (contaminates expected)
+# LimitNoGrowth limit below which a well is defined as having no growth, or
+# insufficient data for analysis (Highest O.D value- Average blank at all time points)
 ####defined by slope at time n divided by slope at time 1 or tn/t1   ####
 
 ################################# Handling of statistics
-#' Stats handling
-#'
-#' stats = TRUE the mean, SD, and SEM of each sample with same name will be calculated
+# Stats handling
+#
+# stats = TRUE the mean, SD, and SEM of each sample with same name will be calculated
 
 ################################# Handling of bacterial contamination
-#' Arguments for dealing with bacterial contamination
-#'
-#' bacteria = assumed doubling time of bacteria, doubling times less than this
-#' limit will be flagged as wells with bacterial contamination
-#' laglimit= beginning of linear range of OD readings, correction
-#' ladder can't correct low OD values
+# Arguments for dealing with bacterial contamination
+#
+# bacteria = assumed doubling time of bacteria, doubling times less than this
+# limit will be flagged as wells with bacterial contamination
+# laglimit= beginning of linear range of OD readings, correction
+# ladder can't correct low OD values
 
 #####################################################################################################
 
