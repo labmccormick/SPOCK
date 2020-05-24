@@ -231,26 +231,26 @@ create.plots<-function(locationofRAW=homedir)
 #' Butterworth filter, picking the second limit by defining the inflection point of exponential
 #' growth as determined by the 1st derivative (diff) ul, and first limit by a heuristically
 #' defined slope change; the doubling time is then calculated between these points.
-#' @param autoinput BOOL parameter, if TRUE then automatically read in all .csv files for outgrowth
-#' analysis. these csv files are autoinputed into DFS, otherwise OGA expect to find a value for dfs.
-#' @param nestdataframe if autoinput is FALSE then you need to pass instead a nested dataframe to analyze
-#' to this paramater.
-#' @param homedir Home Directory, Working Directory containing RAW .csv files from plate reader in Example.csv format.
-#' @param ladder BOOL parameter, if TRUE then OGA finds calibration ladder, and calibrates RAW data.
+#' @param autoinput BOOL parameter, if TRUE then automatically read in all .csv files in current WD for outgrowth
+#' analysis. These csv files are autoinputed into DFS, otherwise OGA expect to find a value for dfs.
+#' @param nestdataframe if autoinput is FALSE then you instead need to pass a nested dataframe to analyze
+#' to this parameter.
+#' @param homedir Home Directory= working directory containing RAW .csv files from plate reader in Example.csv format.
+#' @param ladder BOOL parameter, if TRUE then OGA creates calibration ladder from laddername and calibrates RAW data.
 #' @param laddername Name of ladder.csv file (in same directory as RAW .csv files).
 #' @param repladder Number of technical replicates in ladder (see example).
-#' @param blank Do you have blanks (wells with no innoculum) in the csv files (TRUE/FALSE)
+#' @param blank Do you have blanks (wells with no inoculum) in the csv files (TRUE/FALSE)
 #' @param blankname Name used for blank wells, this name is case sensitive and must match exactly with file.
 #' @param create.plot BOOL parameter, if TRUE then OGA passes RAW files to create.plots to produce plots? (TRUE/FALSE).
 #' @param stringencyfilt What order to use for stringency of Butterworth Filter.
-#' @param frequencyfilt What cuttoff to use for frequency of Butterworth Filter.
+#' @param frequencyfilt What cutoff to use for frequency of Butterworth Filter.
 #' @param measureInterval Time between OD measurements in minutes.
 #' @param lowerlimitslope Slope above which growth is considered exponential.
-#' @param maxinflectionpoint Maximum OD above which the exponential growth phase has ended.
+#' @param maxinflectionpoint OD above which the exponential growth phase cannot occur.
 #' @param LimitNoGrowth What is the OD limit to signal no growth detected/insufficient information for complete growth curve.
-#' @param stats BOOL parameter, if TRUE the OGA passes results files to statsSurvival(TRUE/FALSE)
-#' @param bacteria Limit below which doubling-time is marked as bacterial contamination, if measuring bacterial growth set = 0.5.
-#' @param laglimit Minimum OD above which the exponential growth phase has begun.
+#' @param statsSurvival BOOL parameter, if TRUE OGA passes results files to statsSurvival(TRUE/FALSE)
+#' @param bacteria Limit below which doubling-time is marked as bacterial contamination. If measuring bacterial growth set = 0.5.
+#' @param laglimit OD above which signifies the end of the lag-phase.
 
 
 
@@ -369,7 +369,7 @@ OGA <-
   {script<-paste(script,"\n Blank wells of name:",blankname, "will be subtracted from sample wells.\n.")} #tell user whether blanks will be subracted
   if(create.plot==TRUE)
   {script<-paste(script,"\n Plots will be generated for all samples. \n.")} #tell user whether plots will be generated, this is time consuming
-  if(stats==TRUE)
+  if(statsSurvival==TRUE)
   {script<-paste(script,"\n Statistics will be automatically applied to all inputs. \n.")} #tell user whether they will be provided stats
   script<-paste(script,"\n Wells which did not grow above",LimitNoGrowth, "OD (minus the background) will be flagged NOGROWTH and removed, \n.") #tell user about flagging
   script<-paste(script,"\n Wells with doubling times below", bacteria, "minutes OD will be flagged as CONTAMINATED and removed (if analyzing bacterial set=0.5), \n.") #tell user about flagging
@@ -907,7 +907,7 @@ OGA <-
 
     }
     #####################################################################################################
-    #average replicates and calculate statistics if stats =TRUE
+    #average replicates and calculate statistics if statsSurvival =TRUE
 
     if(statsSurvival)
     {
