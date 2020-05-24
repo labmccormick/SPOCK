@@ -9,7 +9,7 @@
 #' SurvivalCalc
 #'
 #' SurvivalCalc removes nogrowth, contaminates and unexpected growth from experiments and then passes
-#' the modified results to both survivalIntegral and survivalPercentage for calculations.
+#' the modified results to both survivalIntegral and survivalPercentage for calculations, followed by statsCLS for statistics.
 #'
 #' @param firstDay Specify the first day of measurements, default=1
 #' @param resultspath System path where the results are stored, default=current directory
@@ -65,7 +65,7 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
 
 #' CLSCalc
 #'
-#' CLSCalc calculates the fraction surviving between two time points.
+#' CLSCalc calculates the fraction surviving (sn) between two time points.
 #'
 #' @param delta is the time shift associated with the measurements.
 #' @param measureInterval Time between each OD measurement in minutes. Default = 15

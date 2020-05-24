@@ -4,9 +4,9 @@
 #LimitNoGrowth = Limit below which a well is defined as having no growth
 #####################################################################################################
 #####################################################################################################
-#' statsCLS
+#' statsSurvival
 #'
-#' statsCLS takes raw results files and calculates the mean, SD and SEM of all wells with the same name.
+#' statsSurvival takes raw results files and calculates the mean, SD and SEM of all wells with the same name.
 #'
 #' @param locationofresults path to the results of OGA analysis.
 #' @param LimitNoGrowth Parameter specifying the cutoff value for determining growth. default=0.9
@@ -74,9 +74,9 @@ statsSurvival <- function(locationofresults="Results",LimitNoGrowth=0.9, rmflagg
 #locationofresults = path of results folder
 #LimitNoGrowth = Limit below which a well is defined as having no growth
 #####################################################################################################
-#' stats
+#' statsCLS
 #'
-#' stats takes raw results files and calculates the mean, SD and SEM of all wells with the same name from SurvivalPercentage and SurvivalIntegral.
+#' statsCLS takes SurvivalIntegral.csv and calculates the mean, SD and SEM of all wells with the same name from SurvivalPercentage and SurvivalIntegral.
 #'
 
 statsCLS <- function()
