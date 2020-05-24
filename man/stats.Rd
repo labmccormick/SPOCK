@@ -4,7 +4,7 @@
 \alias{stats}
 \title{stats}
 \usage{
-stats(locationofresults = results, LimitNoGrowth = LimitNoGrowth)
+stats(locationofresults = "Results", LimitNoGrowth = 0.9, rmflagged = TRUE)
 }
 \arguments{
 \item{locationofresults}{path to the results of analysis.}
