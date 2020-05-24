@@ -6,7 +6,7 @@
 #####################################################################################################
 #' statsCLS
 #'
-#' stats takes raw results files and calculates the mean, SD and SEM of all wells with the same name.
+#' statsCLS takes raw results files and calculates the mean, SD and SEM of all wells with the same name.
 #'
 #' @param locationofresults path to the results of OGA analysis.
 #' @param LimitNoGrowth Parameter specifying the cutoff value for determining growth. default=0.9
