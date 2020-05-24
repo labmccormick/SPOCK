@@ -9,7 +9,8 @@
 #' stats takes raw results files and calculates the mean, SD and SEM of all wells with the same name.
 #'
 #' @param locationofresults path to the results of analysis.
-#' @param LimitNoGrowth Parameter specifying the cutoff value for determining growth.
+#' @param LimitNoGrowth Parameter specifying the cutoff value for determining growth. default=0.9
+#' @param rmflagged This determines if flagged wells are removed from statistics. default=TRUE
 stats <- function(locationofresults="Results",LimitNoGrowth=0.9, rmflagged=TRUE)
 {
       setwd(locationofresults)
