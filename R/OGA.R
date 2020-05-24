@@ -383,7 +383,7 @@ OGA <-
     {
       if(length(list.files(pattern = "*.csv"))==0)
       {
-        print(paste0("No csv files found, please confirm that you have the csv files of interest in "),homedir)
+        print(paste0("No csv files found, please confirm that you have the csv files of interest in ",homedir))
         errorFound <- TRUE
       }
     }
