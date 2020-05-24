@@ -112,6 +112,10 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
     print(paste0("No viable files found in ",RAWpath))
     return(-1)
   }
+  if(length(grep(pattern=paste0(paste0("*"),firstDay),".csv"),file_list)==0) {
+    print(paste0(paste0("Could not find firstDay csv file, please confirm you have a csv file for that day. Format: <experiment>_Day_",firstDay),".csv"))
+    return(-1)
+  }
   for (i in 1:length (file_list))
     #loop 1:x total number of CSV files in directory
   {
@@ -130,7 +134,6 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
 
   for(x in seq_along(dfs))
   {
-    print(names(dfs[x]))
     qvalue[x] <- as.numeric(gsub("([0-9]+).*$", "\\1", strsplit(names(dfs[x]),"_")[[1]][3]))
     ul.df <- rbind(ul.df,dfs[[x]][4,])
   }
