@@ -11,7 +11,7 @@ SurvivalPercentage(RAWpath = getwd(), firstDay = 1, measureInterval = 15)
 
 \item{firstDay}{First day of measurements. Default = 1}
 
-\item{measureInterval}{Time between each measurement in minutes. Default = 15}
+\item{measureInterval}{Time between each OD measurement in minutes. Default = 15}
 }
 \description{
 This function computes percentage of cells still alive. This function looks for files

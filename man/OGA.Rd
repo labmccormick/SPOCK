@@ -20,7 +20,7 @@ OGA(
   lowerlimitslope = 0.01,
   maxinflectionpoint = 1.3,
   LimitNoGrowth = 0.9,
-  stats = TRUE,
+  statsSurvival = TRUE,
   bacteria = 45,
   laglimit = 0.1
 )
@@ -32,37 +32,37 @@ analysis. these csv files are autoinputed into DFS, otherwise OGA expect to find
 \item{nestdataframe}{if autoinput is FALSE then you need to pass instead a nested dataframe to analyze
 to this paramater.}
 
-\item{homedir}{Home Directory}
+\item{homedir}{Home Directory, Working Directory containing RAW .csv files from plate reader in Example.csv format.}
 
-\item{ladder}{ladder}
+\item{ladder}{BOOL parameter, if TRUE then OGA finds calibration ladder, and calibrates RAW data.}
 
-\item{laddername}{Name of ladder}
+\item{laddername}{Name of ladder.csv file (in same directory as RAW .csv files).}
 
-\item{repladder}{Number of replicates in ladder}
+\item{repladder}{Number of technical replicates in ladder (see example).}
 
-\item{blank}{Do you have blanks in the csv files (TRUE/FALSE)}
+\item{blank}{Do you have blanks (wells with no innoculum) in the csv files (TRUE/FALSE)}
 
-\item{blankname}{Name used for blanks, this name is case sensitive and must match exactly with file.}
+\item{blankname}{Name used for blank wells, this name is case sensitive and must match exactly with file.}
 
-\item{create.plot}{Should we produce plots? (TRUE/FALSE)}
+\item{create.plot}{BOOL parameter, if TRUE then OGA passes RAW files to create.plots to produce plots? (TRUE/FALSE).}
 
-\item{stringencyfilt}{What filter to use for stringency.}
+\item{stringencyfilt}{What order to use for stringency of Butterworth Filter.}
 
-\item{frequencyfilt}{What filter to use for frequency.}
+\item{frequencyfilt}{What cuttoff to use for frequency of Butterworth Filter.}
 
-\item{measureInterval}{Time between measurements.}
+\item{measureInterval}{Time between OD measurements in minutes.}
 
-\item{lowerlimitslope}{What is the lower limit for the slope to calculate.}
+\item{lowerlimitslope}{Slope above which growth is considered exponential.}
 
-\item{maxinflectionpoint}{What is the maximum inflection point.}
+\item{maxinflectionpoint}{Maximum OD above which the exponential growth phase has ended.}
 
-\item{LimitNoGrowth}{What is the OD limit to signal no growth detected.}
+\item{LimitNoGrowth}{What is the OD limit to signal no growth detected/insufficient information for complete growth curve.}
 
-\item{stats}{Do you want to run stats (TRUE/FALSE)}
+\item{bacteria}{Limit below which doubling-time is marked as bacterial contamination, if measuring bacterial growth set = 0.5.}
 
-\item{bacteria}{Should OGA flag potential bacterial growth.}
+\item{laglimit}{Minimum OD above which the exponential growth phase has begun.}
 
-\item{laglimit}{Limit to how far until you declare a lag state.}
+\item{stats}{BOOL parameter, if TRUE the OGA passes results files to statsSurvival(TRUE/FALSE)}
 }
 \description{
 OGA calculates doubling times by subtracting blank wells, smoothing high frequency noise by a

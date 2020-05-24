@@ -8,7 +8,7 @@ SurvivalCalc(
   firstDay = 1,
   resultspath = getwd(),
   rmflagged = TRUE,
-  stats = TRUE,
+  statsCLS = TRUE,
   measureInterval = 15
 )
 }
@@ -17,11 +17,11 @@ SurvivalCalc(
 
 \item{resultspath}{System path where the results are stored, default=current directory}
 
-\item{rmflagged}{Flag that specifies you want to remove contamination. default = TRUE}
+\item{rmflagged}{This determines if flagged wells are removed from CLS statistics. default=TRUE}
 
-\item{stats}{Should the code run stats on the results (TRUE/FALSE), default=TRUE}
+\item{statsCLS}{Should the code run statsCLS on the CLS results (TRUE/FALSE), default=TRUE}
 
-\item{measureInterval}{Interval in minutes for each measurement default=15}
+\item{measureInterval}{Interval in minutes for each OD measurement default=15}
 }
 \description{
 SurvivalCalc does something.

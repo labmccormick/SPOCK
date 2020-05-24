@@ -9,7 +9,7 @@ CLSCalc(delta, measureInterval = 15, doubleTime = 90 * 60)
 \arguments{
 \item{delta}{is the time shift associated with the measurements.}
 
-\item{measureInterval}{Time between each measurement in minutes. Default = 15}
+\item{measureInterval}{Time between each OD measurement in minutes. Default = 15}
 
 \item{doubleTime}{Doubling time for the specific specimen of interest in seconds. Default = 90*60}
 }
