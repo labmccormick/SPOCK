@@ -17,10 +17,12 @@ SurvivalCalc(
 
 \item{resultspath}{System path where the results are stored, default=current directory}
 
+\item{rmflagged}{Flag that specifies you want to remove contamination. default = TRUE}
+
 \item{stats}{Should the code run stats on the results (TRUE/FALSE), default=TRUE}
 
 \item{measureInterval}{Interval in minutes for each measurement default=15}
 }
 \description{
-SurvivalCalc does something cool.
+SurvivalCalc does something.
 }

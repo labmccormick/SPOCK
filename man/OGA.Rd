@@ -70,14 +70,3 @@ Butterworth filter, picking the second limit by defining the inflection point of
 growth as determined by the 1st derivative (diff) ul, and first limit by a heuristically
 defined slope change the doubling time is then calculated between these points.
 }
-\examples{
-This first example assumes that your experiment measured OD values every 15 minutes and that you
-labeled blanks with the keyword BLANK in the csv files containing the data. This is what the
-default values are set to so just call the function.
-
-> OGA()
-
-This next example changes the time interval of the measurements to be every 30 minutes.
-
-> OGA(measureInterval = 30)
-}

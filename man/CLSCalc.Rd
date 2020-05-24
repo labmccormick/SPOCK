@@ -2,12 +2,17 @@
 % Please edit documentation in R/CLCalc.R
 \name{CLSCalc}
 \alias{CLSCalc}
-\title{CLSCalc
-This function calculates the}
+\title{CLSCalc}
 \usage{
 CLSCalc(delta, measureInterval = 15, doubleTime = 90 * 60)
 }
+\arguments{
+\item{delta}{is the time shift associated with the measurements.}
+
+\item{measureInterval}{Time between each measurement in minutes. Default = 15}
+
+\item{doubleTime}{Doubling time for the specific specimen of interest in seconds. Default = 90*60}
+}
 \description{
-CLSCalc
-This function calculates the
+CLSCalc calculates the fraction surviving between two time points.
 }

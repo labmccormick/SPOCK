@@ -8,10 +8,11 @@
 
 #' SurvivalCalc
 #'
-#' SurvivalCalc does something cool.
+#' SurvivalCalc does something.
+#'
 #' @param firstDay Specify the first day of measurements, default=1
 #' @param resultspath System path where the results are stored, default=current directory
-#' @param rmflagged
+#' @param rmflagged Flag that specifies you want to remove contamination. default = TRUE
 #' @param stats Should the code run stats on the results (TRUE/FALSE), default=TRUE
 #' @param measureInterval Interval in minutes for each measurement default=15
 
@@ -62,21 +63,38 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
 
 
 #' CLSCalc
-#' This function calculates the
+#'
+#' CLSCalc calculates the fraction surviving between two time points.
+#'
+#' @param delta is the time shift associated with the measurements.
+#' @param measureInterval Time between each measurement in minutes. Default = 15
+#' @param doubleTime Doubling time for the specific specimen of interest in seconds. Default = 90*60
 CLSCalc <- function(delta, measureInterval=15, doubleTime = 90*60)
 {
   Sn = 100* (1 / (2^((delta*measureInterval) / doubleTime)))
   return(Sn)
 }
 
-#setwd("/home/fitz/code/OGA-test/Results/") # this is the location of the results csv files
-
+#' SurvivalPercentage
+#'
+#' This function computes percentage of cells still alive. This function looks for files
+#' that have the filename of the syntax <experiment>_Day_###.csv where <experiment> can be
+#' any unique ID to define the experiment, _Day_ is a marker to identify when the day is
+#' going to be specified and ### is the actual day of measuring.
+#'
+#' @param RAWpath path where the raw data files are located. Default = current working directory
+#' @param firstDay First day of measurements. Default = 1
+#' @param measureInterval Time between each measurement in minutes. Default = 15
 SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=15)
 {
   setwd(RAWpath)
   file_list <-
     list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*.csv") #list all files in current working directory with extension.csv and Day notation
-  print(file_list)
+  if(length(file_list)==0)
+  {
+    print(paste0("No viable files found in ",RAWpath))
+    return(-1)
+  }
   for (i in 1:length (file_list))
     #loop 1:x total number of CSV files in directory
   {
@@ -89,7 +107,6 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
 
   ul.df <- data.frame()
   dt.df <- dfs[[grep(paste0(firstDaygrep,"$"),names(dfs))]][1,]
-  View(dt.df)
   qvalue <- c()
   strsplit(names(dfs[1]),"_")[[1]][2]
   names(dfs[[1]])
@@ -100,7 +117,6 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
     qvalue[x] <- as.numeric(gsub("([0-9]+).*$", "\\1", strsplit(names(dfs[x]),"_")[[1]][3]))
     ul.df <- rbind(ul.df,dfs[[x]][4,])
   }
-  View(ul.df)
   # sortedDt is a sorted doubling time data frame so that the survival data frame is in a manner
   # that is age+1 is the next element in the data frame so solving the survival function
   # makes sense
@@ -112,7 +128,6 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
   survDt[1,] <- 100
   survDt[1,1] <- 1
   colnames(survDt) <- names(dfs[[1]])
-  View(survDt)
   for(z in 2:length(sortedDt[1,]))
   {
     #print(paste0("Results for ",colnames(ul.df)[z])
@@ -126,6 +141,12 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
   }
 }
 
+#' SurvivalIntegral
+#'
+#' Calculate the area under the curve as determined by the survival percentage for an experiment.
+#'
+#' @param homedir Path where a csv containing the percent surviving for an experiment lives. default=getwd()
+#' @param fileName Name of the file with the experimental data. default="SurvivalPercentage.csv"
 SurvivalIntegral <- function(homedir=getwd(), fileName = "SurvivalPercentage.csv")
 {
   setwd(homedir)
@@ -185,7 +206,7 @@ SurvivalIntegral <- function(homedir=getwd(), fileName = "SurvivalPercentage.csv
 
 
 
-
+########################## These are some potential other greps depending on final result of files.
 # ############## saved for use later to get names more clearly dealt with
 # > list.files(pattern = "results-[[:alnum:]]*_Day_[[:digit:]]*.csv")
 # character(0)

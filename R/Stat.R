@@ -3,6 +3,12 @@
 #locationofresults = path of results folder
 #LimitNoGrowth = Limit below which a well is defined as having no growth
 #####################################################################################################
+#' stats
+#'
+#' stats takes raw results files and calculates the mean, SD and SEM of all wells with the same name.
+#'
+#' @param locationofresults path to the results of analysis.
+#' @param LimitNoGrowth Parameter specifying the cutoff value for determining growth.
 stats <- function(locationofresults=results,LimitNoGrowth=LimitNoGrowth)
 {
       setwd(locationofresults)
