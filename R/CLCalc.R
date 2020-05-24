@@ -8,7 +8,8 @@
 
 #' SurvivalCalc
 #'
-#' SurvivalCalc does something.
+#' SurvivalCalc removes nogrowth, contaminates and unexpected growth from experiments and then passes
+#' the modified results to both survivalIntegral and survivalPercentage for calculations.
 #'
 #' @param firstDay Specify the first day of measurements, default=1
 #' @param resultspath System path where the results are stored, default=current directory
