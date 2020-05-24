@@ -118,8 +118,7 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
           isn't the one with generated results from OGA(), check that the path passed is correct. If the files are modified
           and the names are changed to exclude results- in the name you can ignore this warning.")
   }
-
-  if(length(grep(pattern=paste0(paste0("*"),firstDay),".csv"),file_list)==0) {
+  if(length(grep(pattern=paste0(paste0("*",firstDay),".csv"),file_list)==0)) {
     print(paste0(paste0("Could not find firstDay csv file, please confirm you have a csv file for that day. Format: <experiment>_Day_",firstDay),".csv"))
     return(-1)
   }
