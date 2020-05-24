@@ -25,5 +25,5 @@ SurvivalCalc(
 }
 \description{
 SurvivalCalc removes nogrowth, contaminates and unexpected growth from experiments and then passes
-the modified results to both survivalIntegral and survivalPercentage for calculations.
+the modified results to both survivalIntegral and survivalPercentage for calculations, followed by statsCLS for statistics.
 }

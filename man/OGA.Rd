@@ -68,5 +68,5 @@ to this paramater.}
 OGA calculates doubling times by subtracting blank wells, smoothing high frequency noise by a
 Butterworth filter, picking the second limit by defining the inflection point of exponential
 growth as determined by the 1st derivative (diff) ul, and first limit by a heuristically
-defined slope change the doubling time is then calculated between these points.
+defined slope change; the doubling time is then calculated between these points.
 }

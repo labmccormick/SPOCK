@@ -2,7 +2,7 @@
 % Please edit documentation in R/Stat.R
 \name{statsSurvival}
 \alias{statsSurvival}
-\title{statsCLS}
+\title{statsSurvival}
 \usage{
 statsSurvival(
   locationofresults = "Results",
@@ -18,5 +18,5 @@ statsSurvival(
 \item{rmflagged}{This determines if flagged wells are removed from statistics. default=TRUE}
 }
 \description{
-stats takes raw results files and calculates the mean, SD and SEM of all wells with the same name.
+statsSurvival takes raw results files and calculates the mean, SD and SEM of all wells with the same name.
 }

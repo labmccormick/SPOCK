@@ -2,10 +2,10 @@
 % Please edit documentation in R/Stat.R
 \name{statsCLS}
 \alias{statsCLS}
-\title{stats}
+\title{statsCLS}
 \usage{
 statsCLS()
 }
 \description{
-stats takes raw results files and calculates the mean, SD and SEM of all wells with the same name from SurvivalPercentage and SurvivalIntegral.
+statsCLS takes SurvivalIntegral.csv and calculates the mean, SD and SEM of all wells with the same name from SurvivalPercentage and SurvivalIntegral.
 }
