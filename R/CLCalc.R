@@ -12,11 +12,11 @@
 #'
 #' @param firstDay Specify the first day of measurements, default=1
 #' @param resultspath System path where the results are stored, default=current directory
-#' @param rmflagged Flag that specifies you want to remove contamination. default = TRUE
-#' @param stats Should the code run stats on the results (TRUE/FALSE), default=TRUE
-#' @param measureInterval Interval in minutes for each measurement default=15
+#' @param rmflagged This determines if flagged wells are removed from CLS statistics. default=TRUE
+#' @param statsCLS Should the code run statsCLS on the CLS results (TRUE/FALSE), default=TRUE
+#' @param measureInterval Interval in minutes for each OD measurement default=15
 
-SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, stats=TRUE, measureInterval=15)
+SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, statsCLS=TRUE, measureInterval=15)
 {
   setwd(resultspath)                     #set directory to resultspath (location of raw results files)
   survivalanalysis <-paste0(resultspath, "/Survivalanalysis")     #create survivalanalysis which identifies the path for the survival analysis dir
@@ -55,7 +55,7 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
   SurvivalPercentage(RAWpath,firstDay,measureInterval)
   SurvivalIntegral(homedir, fileName = "SurvivalPercentage.csv")
 
-  if(stats)
+  if(statsCLS)
   {statsCLS()}
 
 
@@ -67,7 +67,7 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
 #' CLSCalc calculates the fraction surviving between two time points.
 #'
 #' @param delta is the time shift associated with the measurements.
-#' @param measureInterval Time between each measurement in minutes. Default = 15
+#' @param measureInterval Time between each OD measurement in minutes. Default = 15
 #' @param doubleTime Doubling time for the specific specimen of interest in seconds. Default = 90*60
 CLSCalc <- function(delta, measureInterval=15, doubleTime = 90*60)
 {
@@ -84,7 +84,7 @@ CLSCalc <- function(delta, measureInterval=15, doubleTime = 90*60)
 #'
 #' @param RAWpath path where the raw data files are located. Default = current working directory
 #' @param firstDay First day of measurements. Default = 1
-#' @param measureInterval Time between each measurement in minutes. Default = 15
+#' @param measureInterval Time between each OD measurement in minutes. Default = 15
 SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=15)
 {
   setwd(RAWpath)

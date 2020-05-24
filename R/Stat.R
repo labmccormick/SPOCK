@@ -8,10 +8,10 @@
 #'
 #' stats takes raw results files and calculates the mean, SD and SEM of all wells with the same name.
 #'
-#' @param locationofresults path to the results of analysis.
+#' @param locationofresults path to the results of OGA analysis.
 #' @param LimitNoGrowth Parameter specifying the cutoff value for determining growth. default=0.9
 #' @param rmflagged This determines if flagged wells are removed from statistics. default=TRUE
-stats <- function(locationofresults="Results",LimitNoGrowth=0.9, rmflagged=TRUE)
+statsSurvival <- function(locationofresults="Results",LimitNoGrowth=0.9, rmflagged=TRUE)
 {
       setwd(locationofresults)
       stats <-
@@ -74,6 +74,11 @@ stats <- function(locationofresults="Results",LimitNoGrowth=0.9, rmflagged=TRUE)
 #locationofresults = path of results folder
 #LimitNoGrowth = Limit below which a well is defined as having no growth
 #####################################################################################################
+#' stats
+#'
+#' stats takes raw results files and calculates the mean, SD and SEM of all wells with the same name from SurvivalPercentage and SurvivalIntegral.
+#'
+
 statsCLS <- function()
 {
   print ("Calculating CLS Statistics")
