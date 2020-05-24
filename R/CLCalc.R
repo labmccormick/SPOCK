@@ -6,12 +6,21 @@
 
 ### this just calculates the formula as defined in paper (need paper reference...)
 
+#' SurvivalCalc
+#'
+#' SurvivalCalc does something cool.
+#' @param firstDay Specify the first day of measurements, default=1
+#' @param resultspath System path where the results are stored, default=current directory
+#' @param rmflagged
+#' @param stats Should the code run stats on the results (TRUE/FALSE), default=TRUE
+#' @param measureInterval Interval in minutes for each measurement default=15
+
 SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, stats=TRUE, measureInterval=15)
 {
-  setwd(resultspath)#set directory to resultspath (location of raw results files)
-  survivalanalysis <-paste0(resultspath, "/Survivalanalysis")#create survivalanalysis which identifies the path for the survival analysis dir
-  dir.create(paste0("Survivalanalysis"), showWarnings = FALSE) #creates directory Survivalanalysis within current working directory
-  homedir<-RAWpath<-survivalanalysis #passes homedir and RAWpath to SurvivalPercentage and SurvivalIntegral
+  setwd(resultspath)                     #set directory to resultspath (location of raw results files)
+  survivalanalysis <-paste0(resultspath, "/Survivalanalysis")     #create survivalanalysis which identifies the path for the survival analysis dir
+  dir.create(paste0("Survivalanalysis"), showWarnings = FALSE)    #creates directory Survivalanalysis within current working directory
+  homedir<-RAWpath<-survivalanalysis                              #passes homedir and RAWpath to SurvivalPercentage and SurvivalIntegral
   file_list <-
     list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*.csv")
   empty_list <- vector(mode = "list", length = length(file_list))
@@ -51,6 +60,9 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
 
 }
 
+
+#' CLSCalc
+#' This function calculates the
 CLSCalc <- function(delta, measureInterval=15, doubleTime = 90*60)
 {
   Sn = 100* (1 / (2^((delta*measureInterval) / doubleTime)))

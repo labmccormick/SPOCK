@@ -251,6 +251,16 @@ create.plots<-function(locationofRAW=homedir)
 #' @param stats Do you want to run stats (TRUE/FALSE)
 #' @param bacteria Should OGA flag potential bacterial growth.
 #' @param laglimit Limit to how far until you declare a lag state.
+#' @examples
+#' This first example assumes that your experiment measured OD values every 15 minutes and that you
+#' labeled blanks with the keyword BLANK in the csv files containing the data. This is what the
+#' default values are set to so just call the function.
+#'
+#' > OGA()
+#'
+#' This next example changes the time interval of the measurements to be every 30 minutes.
+#'
+#' > OGA(measureInterval = 30)
 ####################### Convert all of this to the param above - also maybe have an example or 2.
 ##OGA arguments
 # full list of OGA arguments
