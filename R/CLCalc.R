@@ -112,7 +112,7 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
     print(paste0("No viable files found in ",RAWpath))
     return(-1)
   }
-  if(length(grep("results-", file_list)==0))
+  if(length(grep("results-", file_list))==0)
   {
     cat("WARNING: No csv files of the format results-<experiment>_Day_##.csv.\n This could mean the path specified
         isn't the one with generated\n results from OGA(), check that the path passed is correct.\n If the files are modified
