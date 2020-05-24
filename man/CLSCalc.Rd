@@ -14,5 +14,5 @@ CLSCalc(delta, measureInterval = 15, doubleTime = 90 * 60)
 \item{doubleTime}{Doubling time for the specific specimen of interest in seconds. Default = 90*60}
 }
 \description{
-CLSCalc calculates the fraction surviving between two time points.
+CLSCalc calculates the fraction surviving (sn) between two time points.
 }

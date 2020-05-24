@@ -15,8 +15,8 @@ ladderCreate(laddername = "ladder.csv", repladder = 3)
 Returns a calibration ladder for OGA() analysis.
 }
 \description{
-Function to create calibration ladder, used by OGA.
-The output of this function is a 3rd order polynomialwhich is the best fit of the data. This function expects to find a CSV of name
+Function to create calibration ladder used by OGA.
+The output of this function is a 3rd order polynomial which is the best fit of the data. This function expects to find a CSV of name
 ladder.csv (or user defined name) in the current working directory, this should
 be a user generated file. See Example file for format of ladder.csv
 }
