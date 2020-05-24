@@ -4,7 +4,7 @@
 #LimitNoGrowth = Limit below which a well is defined as having no growth
 #####################################################################################################
 #####################################################################################################
-#' stats
+#' statsCLS
 #'
 #' stats takes raw results files and calculates the mean, SD and SEM of all wells with the same name.
 #'

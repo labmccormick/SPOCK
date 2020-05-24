@@ -2,7 +2,7 @@
 % Please edit documentation in R/Stat.R
 \name{statsSurvival}
 \alias{statsSurvival}
-\title{stats}
+\title{statsCLS}
 \usage{
 statsSurvival(
   locationofresults = "Results",
