@@ -15,6 +15,12 @@ ladderCreate <- function(laddername = "ladder.csv",
   # library(pracma)    ### This throws an Error for package building
   pf <- data.frame()
   highest<-vector() # this is the point past which the interpolator is extrapolative, write this out for use later
+  if(!file.exists(laddername))
+  {
+    print(paste0("Could not find ladder file: ",laddername))
+    print("Please specify laddername with laddername=\"file\" in the arguments.")
+    return(-1)
+  }
   ladderdf <-
     read.csv(laddername)#read in ladder file with name defined in function into ladderdf(ladder dataframe)
   measladdirect <-
@@ -62,6 +68,11 @@ create.plots<-function(locationofRAW=homedir)
   # library(ggplot2)  ### This throws an error for package building
   print(locationofRAW)
   print("Creating Plots")
+  if(!dir.exists(locationofRAW))
+  {
+    print(paste0(paste0("Directory: ",locationofRAW),"is unavailable, please check filesystem for correct path."))
+    return(-1)
+  }
   setwd(locationofRAW) #point function to directory containing raw output files from OGA function, these are used to plot
   plots <-
   paste0(locationofRAW, "/Plots")#create variable plots which identifies the path for the plots directory
@@ -354,6 +365,33 @@ OGA <-
     #OGA declaration
     # Begin
   {
+    # sanity checks for passed values
+    errorFound <- FALSE
+    if(!dir.exists(homedir))
+    {
+      print(paste0(paste0("Directory: ",homedir),"not found. Confirm it exists and you have permission to access it."))
+      errorFound<-TRUE
+    }
+
+    if(!file.exists(laddername))
+    {
+      print(paste0("Could not find ladder file: ",laddername))
+      print("Confirm that this file is in the working directory or specify a different file with laddername=<file>")
+      errorFound <- TRUE
+    }
+    if(autoinput)
+    {
+      if(length(list.files(pattern = "*.csv"))==0)
+      {
+        print(paste0("No csv files found, please confirm that you have the csv files of interest in "),homedir)
+        errorFound <- TRUE
+      }
+    }
+    if(errorFound)
+    {
+      return(-1)
+    }
+
     # call all libraries used in function
     #################### set arguments of butterworth filter
     bw <- signal::butter(stringencyfilt, frequencyfilt)
