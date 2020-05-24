@@ -20,7 +20,7 @@ OGA(
   lowerlimitslope = 0.01,
   maxinflectionpoint = 1.3,
   LimitNoGrowth = 0.9,
-  statsSurvival = TRUE,
+  statsDT = TRUE,
   bacteria = 45,
   laglimit = 0.1
 )
@@ -58,11 +58,11 @@ to this parameter.}
 
 \item{LimitNoGrowth}{What is the OD limit to signal no growth detected/insufficient information for complete growth curve.}
 
-\item{statsSurvival}{BOOL parameter, if TRUE OGA passes results files to statsSurvival(TRUE/FALSE)}
+\item{statsDT}{BOOL parameter, if TRUE OGA passes results files to statsDT(TRUE/FALSE)}
 
 \item{bacteria}{Limit below which doubling-time is marked as bacterial contamination. If measuring bacterial growth set = 0.5.}
 
-\item{laglimit}{OD above which signifies the end of the lag-phase.}
+\item{laglimit}{OD above which marks the end of the lag-phase.}
 }
 \description{
 OGA calculates doubling times by subtracting blank wells, smoothing high frequency noise by a
