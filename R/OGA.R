@@ -248,9 +248,9 @@ create.plots<-function(locationofRAW=homedir)
 #' @param lowerlimitslope Slope above which growth is considered exponential.
 #' @param maxinflectionpoint OD above which the exponential growth phase cannot occur.
 #' @param LimitNoGrowth What is the OD limit to signal no growth detected/insufficient information for complete growth curve.
-#' @param statsSurvival BOOL parameter, if TRUE OGA passes results files to statsSurvival(TRUE/FALSE)
+#' @param statsDT BOOL parameter, if TRUE OGA passes results files to statsDT(TRUE/FALSE)
 #' @param bacteria Limit below which doubling-time is marked as bacterial contamination. If measuring bacterial growth set = 0.5.
-#' @param laglimit OD above which signifies the end of the lag-phase.
+#' @param laglimit OD above which marks the end of the lag-phase.
 
 
 
@@ -348,7 +348,7 @@ OGA <-
            lowerlimitslope = 0.01,
            maxinflectionpoint = 1.3,
            LimitNoGrowth=0.9,
-           statsSurvival = TRUE,
+           statsDT = TRUE,
            bacteria = 45,
            laglimit=0.1)
     #OGA declaration
@@ -369,7 +369,7 @@ OGA <-
   {script<-paste(script,"\n Blank wells of name:",blankname, "will be subtracted from sample wells.\n.")} #tell user whether blanks will be subracted
   if(create.plot==TRUE)
   {script<-paste(script,"\n Plots will be generated for all samples. \n.")} #tell user whether plots will be generated, this is time consuming
-  if(statsSurvival==TRUE)
+  if(statsDT==TRUE)
   {script<-paste(script,"\n Statistics will be automatically applied to all inputs. \n.")} #tell user whether they will be provided stats
   script<-paste(script,"\n Wells which did not grow above",LimitNoGrowth, "OD (minus the background) will be flagged NOGROWTH and removed, \n.") #tell user about flagging
   script<-paste(script,"\n Wells with doubling times below", bacteria, "minutes OD will be flagged as CONTAMINATED and removed (if analyzing bacterial set=0.5), \n.") #tell user about flagging
@@ -907,11 +907,11 @@ OGA <-
 
     }
     #####################################################################################################
-    #average replicates and calculate statistics if statsSurvival =TRUE
+    #average replicates and calculate statistics if statsDT =TRUE
 
-    if(statsSurvival)
+    if(statsDT)
     {
-      statsSurvival(results,LimitNoGrowth)
+      statsDT(results,LimitNoGrowth)
     }
 
     #####################################################################################################
