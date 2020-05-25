@@ -31,26 +31,23 @@ statsDT <- function(locationofresults="Results",LimitNoGrowth=0.9, rmflagged=TRU
   {
     #####################################################################################################
     #Housekeeping
-    daf<-as.data.frame(read.csv(file_list_tostat[analysis], row.names = 1, stringsAsFactors=FALSE))
+    dfg<-as.data.frame(read.csv(file_list_tostat[analysis], row.names = 1, stringsAsFactors=FALSE))
     if(rmflagged) #remove flagged wells if =TRUE
     {
-      toolow<-(LimitNoGrowth-(as.numeric(daf[9,1])))
-      xh<-which(as.numeric(daf[6,])>toolow)
-      daf<-daf[,xh]
-      xg<-which(as.numeric(daf[5,])>as.numeric(daf[4,]))
-      daf<-daf[,xg]
+    dfg<-dfg[which(dfg[7,]!="No Growth" & dfg[8,]!="Unexpected Growth" & dfg[10,]!="CONTAMINATION")]
     }
-    dfg<-daf
     dfg[11,]<-colnames(dfg)
     name<-0
     average<-0
     sd<-0
     se<-0
     dfg[11,]<-sub("\\..*", "", dfg[11,])
-    for (l in 1:length(colnames(daf)))
+    repnum<-0
+    for (l in 1:length(colnames(dfg)))
     {
       name[l]<-sub("\\..*", "", colnames(dfg)[1]) #take name of first SAMPLE and remove R inserted .# values
       reps<-grep(paste0(name[l], "$"), dfg[11,]) #find all SAMPLES with same name as column 1
+      repnum[l]<-length(reps)
       dtval<-(as.numeric(dfg[1,reps]))
       dtval[is.na(dtval)]<-0
       dtval[is.infinite(dtval)]<-0
@@ -59,23 +56,32 @@ statsDT <- function(locationofresults="Results",LimitNoGrowth=0.9, rmflagged=TRU
         average[l]<-mean(as.numeric(dtval)) #average these columns doubling time
         sd[l]<-sd(as.numeric(dfg[1,reps])) #find SD of these columns doubling time
         se[l]<-(sd[l]/sqrt(length(reps))) #find SEM of these columns doubling time
+      }else
+      {
+        average[l]<-NA
+        sd[l]<-NA
+        se[l]<-NA
+      }
         if(dim(dfg)[2]>length(reps)) #remove SAMPLE replicate columns from further analysis
         {
-          dfg<-dfg[,-reps]
+          dfg<-as.data.frame(dfg[-reps])
         }
         else
         {
           dfg<-0 #if all columns have been analyzed stop
           break
         }
-      }
+
     }
-    avdataout<-as.data.frame(cbind(average,sd,se)) #create dataframe and store stats here
+    avdataout<-as.data.frame(cbind(repnum,average,sd,se)) #create dataframe and store stats here
+    colnames(avdataout)[1]<-"Replicates"
     rownames(avdataout)<-name
     write.csv (avdataout, file.path(stats, file = paste0(sub(".csv", "", file_list_tostat[analysis]), "averagedresults.csv"))) #write out dataframe.csv to replicate_stats dir
+    rm(dfg,se,sd,average,repnum)
   }
   setwd("..") #setwd to dir one level up
-}
+  }
+
 
 ############################################################################# CLS STATS CALCULATION
 #stats takes Survival Percentage and Survival Integral files and calculates the mean, SD, and SEM of all wells with the same name
@@ -125,7 +131,7 @@ statsCLS <- function()
         se[[times]][l]<-(sd[[times]][l]/sqrt(length(reps))) #find SEM of these columns doubling time
       }
       if(dim(si)[2]>length(reps)) #remove SAMPLE replicate columns from further analysis
-      {si<-si[,-reps]
+      {si<-si[-reps]
       }else{
         si<-0 #if all columns have been analyzed stop
         break}
