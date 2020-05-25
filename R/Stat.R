@@ -11,7 +11,7 @@
 #' @param locationofresults path to the results of OGA analysis.
 #' @param LimitNoGrowth Parameter specifying the cutoff value for determining growth. default=0.9
 #' @param rmflagged This determines if flagged wells are removed from statistics. default=TRUE
-statsDT <- function(locationofresults="Results",LimitNoGrowth=0.9, rmflagged=TRUE)
+statsDT <- function(locationofresults="Results", rmflagged=TRUE)
 {
   if(!dir.exists(locationofresults))
   {

@@ -949,7 +949,7 @@ OGA <-
 
     if(statsDT)
     {
-      statsDT(results,LimitNoGrowth)
+      statsDT(results,rmflagged)
     }
 
     #####################################################################################################
