@@ -1,11 +1,3 @@
-###
-### Commented out print statements are lazy man debugging, uncomment if you want to see the
-### code as it goes
-### this will eventually be setup as a debugging element
-
-
-### this just calculates the formula as defined in paper (need paper reference...)
-
 #' SurvivalCalc
 #'
 #' SurvivalCalc removes nogrowth, contaminates and unexpected growth from experiments and then passes
@@ -24,8 +16,8 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
     print(paste0("Directory: ", resultspath," not found, confirm it exists and you have permission to access it."))
     return(-1)
   }
-  setwd(resultspath)                     #set directory to resultspath (location of raw results files)
-  survivalanalysis <-paste0(getwd(), "/Survivalanalysis")     #create survivalanalysis which identifies the path for the survival analysis dir
+  setwd(resultspath)                                              #set directory to resultspath (location of raw results files)
+  survivalanalysis <-paste0(getwd(), "/Survivalanalysis")         #create survivalanalysis which identifies the path for the survival analysis dir
   dir.create(paste0("Survivalanalysis"), showWarnings = FALSE)    #creates directory Survivalanalysis within current working directory
   homedir<-RAWpath<-survivalanalysis                              #passes homedir and RAWpath to SurvivalPercentage and SurvivalIntegral
   file_list <-
@@ -61,23 +53,17 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
   }
   rm(xh, file_list, empty_list)
   }else
-  {  for (cleaning in 1:length(file_list))
-      { df<-as.data.frame(read.csv(file_list[cleaning], row.names = 1, stringsAsFactors=FALSE))
-    write.csv (df, file.path(survivalanalysis, file = paste0("results-flagged-wells-NOT-removed",file_list[cleaning])))
-    rm(df)
+  {
+    for (cleaning in 1:length(file_list))
+      {
+        df<-as.data.frame(read.csv(file_list[cleaning], row.names = 1, stringsAsFactors=FALSE))
+        write.csv (df, file.path(survivalanalysis, file = paste0("results-flagged-wells-NOT-removed",file_list[cleaning])))
+        rm(df)
       }
-
   }
-
-
   SurvivalPercentage(RAWpath,firstDay,measureInterval)
-
   SurvivalIntegral(homedir, fileName = "SurvivalPercentage.csv")
-
-  if(statsCLS)
-  {statsCLS()}
-
-
+  if(statsCLS) { statsCLS() }
 }
 
 
@@ -88,6 +74,7 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
 #' @param delta is the time shift associated with the measurements.
 #' @param measureInterval Time between each OD measurement in minutes. Default = 15
 #' @param doubleTime Doubling time for the specific specimen of interest in seconds. Default = 90*60
+
 CLSCalc <- function(delta, measureInterval=15, doubleTime = 90*60)
 {
   Sn = 100* (1 / (2^((delta*measureInterval) / doubleTime)))
@@ -104,6 +91,7 @@ CLSCalc <- function(delta, measureInterval=15, doubleTime = 90*60)
 #' @param RAWpath path where the raw data files are located. Default = current working directory
 #' @param firstDay First day of measurements. Default = 1
 #' @param measureInterval Time between each OD measurement in minutes. Default = 15
+
 SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=15)
 {
 
@@ -161,18 +149,15 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
   ul.df[,1] <- qvalue
   colnames(ul.df)[1]<-"Time"
   sortedDt <- ul.df[order(ul.df$Time),]
-  # sortedDt <- sortedDt[-nrow(sortedDt),]
   survDt <- sortedDt
   survDt[1,] <- 100
   survDt[1,1] <- 1
   colnames(survDt) <- names(dfs[[1]])
   for(z in 2:length(sortedDt[1,]))
   {
-    #print(paste0("Results for ",colnames(ul.df)[z])
     for(y in 2:length(qvalue))
     {
       Sn <-CLSCalc((as.numeric(sortedDt[y,z])-as.numeric(sortedDt[1,z])), measureInterval, dt.df[1,z] )
-      #print(paste0("Day ",sortedDt[y,1],": ",Sn," based on: ",dt.df[1,z]))
       survDt[y,z]<-format(round(Sn,2),nsmall=2)
     }
     write.csv(survDt,file="SurvivalPercentage.csv",row.names = FALSE)
@@ -185,6 +170,7 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
 #'
 #' @param homedir Path where a csv containing the percent surviving for an experiment lives. default=getwd()
 #' @param fileName Name of the file with the experimental data. default="SurvivalPercentage.csv"
+
 SurvivalIntegral <- function(homedir=getwd(), fileName = "SurvivalPercentage.csv")
 {
   setwd(homedir)
@@ -203,14 +189,10 @@ SurvivalIntegral <- function(homedir=getwd(), fileName = "SurvivalPercentage.csv
   for(name in names(ul.df))
   {
     SI <- 0
-    #print(paste("Computing: ",name))
-    #print(paste("Starting SI reset",SI))
     for(n in 2:length(ul.df[,1]))
     {
       SI <- SI+((((ul.df[n,name])+ul.df[n-1,name])/2)*(ul.df[n,1]-ul.df[n-1,1]))
-      #print(SI)
     }
-    #print(paste0("Final SI for ",name,":",SI))
     SI.mat[count]<-SI
     count <- count + 1
   }
@@ -224,34 +206,8 @@ SurvivalIntegral <- function(homedir=getwd(), fileName = "SurvivalPercentage.csv
 
 }
 
-# if (ul > 5)
-# {
-#   xaxe<-as.vector(c(1:5))
-#   llonemean<-lm(yfilterd[1:5]~xaxe)$coefficients[2]
-#
-#   for (ll in 1:(ul-5))
-#   {
-#     llmean <- lm(yfilterd[(ll):(ll+4)]~xaxe)$coefficients[2]
-#
-#     if (llmean > llonemean*fractionlowerlimit)
-#    {
-#      lowerlimit[ii - 1] <- low <- (ll+2)
-#      break
-#    } else
-#    {
-#      lowerlimit <- low <- 1
-#      print("ZERO")
-#    }
-#  }
-#} else
-#{
-#  lowerlimit <- low <- 1
-#  print("ZERO")
-#}
 
-
-
-########################## These are some potential other greps depending on final result of files.
+###################### These are some potential other greps depending on final result of files.
 # ############## saved for use later to get names more clearly dealt with
 # > list.files(pattern = "results-[[:alnum:]]*_Day_[[:digit:]]*.csv")
 # character(0)
