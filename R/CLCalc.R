@@ -25,7 +25,7 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
     return(-1)
   }
   setwd(resultspath)                     #set directory to resultspath (location of raw results files)
-  survivalanalysis <-paste0(resultspath, "/Survivalanalysis")     #create survivalanalysis which identifies the path for the survival analysis dir
+  survivalanalysis <-paste0(getwd(), "/Survivalanalysis")     #create survivalanalysis which identifies the path for the survival analysis dir
   dir.create(paste0("Survivalanalysis"), showWarnings = FALSE)    #creates directory Survivalanalysis within current working directory
   homedir<-RAWpath<-survivalanalysis                              #passes homedir and RAWpath to SurvivalPercentage and SurvivalIntegral
   file_list <-
@@ -71,6 +71,7 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
 
 
   SurvivalPercentage(RAWpath,firstDay,measureInterval)
+
   SurvivalIntegral(homedir, fileName = "SurvivalPercentage.csv")
 
   if(statsCLS)
@@ -132,6 +133,7 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
     print(paste0(paste0("Could not find firstDay csv file, please confirm you have a csv file for that day. Format: <experiment>_Day_",firstDay),".csv"))
     return(-1)
   }
+  print("Calculating Survival Percentage")
   for (i in 1:length (file_list))
     #loop 1:x total number of CSV files in directory
   {
@@ -186,6 +188,13 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
 SurvivalIntegral <- function(homedir=getwd(), fileName = "SurvivalPercentage.csv")
 {
   setwd(homedir)
+  if(!file.exists(fileName))
+  {
+    print(paste0("Could not find  file: ",fileName))
+    print("Confirm that this file is in the working directory or specify a different file with laddername=<file>")
+    return(-1)
+  }
+  print("Calculating Survival Integral")
   ul.df <- read.csv(file = fileName)
   colnames(ul.df)[1]<-"Time"
   ul.df <- ul.df[order(ul.df$Time),]
