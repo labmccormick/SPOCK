@@ -119,6 +119,7 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
          This could mean the path specified isn't the one with generated results
          from OGA(), check that the path passed is correct. If the files are modified
         and the names are changed to exclude results- in the name you can ignore this warning.\n")
+
   }
   if(length(grep(pattern=paste0("*",firstDay,".csv"),file_list))==0) {
     print(paste0(paste0("Could not find firstDay csv file, please confirm you have a csv file for that day. Format: <experiment>_Day_",firstDay),".csv"))
@@ -186,14 +187,14 @@ SurvivalIntegral <- function(homedir=getwd(), fileName = "SurvivalPercentage.csv
   for(name in names(ul.df))
   {
     SI <- 0
-    print(paste("Computing: ",name))
-    print(paste("Starting SI reset",SI))
+    #print(paste("Computing: ",name))
+    #print(paste("Starting SI reset",SI))
     for(n in 2:length(ul.df[,1]))
     {
       SI <- SI+((((ul.df[n,name])+ul.df[n-1,name])/2)*(ul.df[n,1]-ul.df[n-1,1]))
-      print(SI)
+      #print(SI)
     }
-    print(paste0(paste0(paste0("Final SI for ",name),":"),SI))
+    #print(paste0(paste0(paste0("Final SI for ",name),":"),SI))
     SI.mat[count]<-SI
     count <- count + 1
   }
