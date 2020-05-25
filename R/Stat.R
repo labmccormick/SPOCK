@@ -15,7 +15,7 @@ statsDT <- function(locationofresults="Results",LimitNoGrowth=0.9, rmflagged=TRU
 {
       if(!dir.exists(locationofresults))
       {
-        print(paste0(paste0("Directory: ", locationofresults)," not found, confirm it exists and you have permission to access it."))
+        print(paste0("Directory: ", locationofresults," not found, confirm it exists and you have permission to access it."))
         return(-1)
       }
 

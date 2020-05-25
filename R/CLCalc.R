@@ -109,7 +109,7 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
 
   if(!dir.exists(RAWpath))
   {
-    print(paste0(paste0("Directory: ", RAWpath)," not found, confirm it exists and you have permission to access it."))
+    print(paste0("Directory: ", RAWpath," not found, confirm it exists and you have permission to access it."))
     return(-1)
   }
   setwd(RAWpath)
@@ -130,7 +130,7 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
 
   }
   if(length(grep(pattern=paste0("*",firstDay,".csv"),file_list))==0) {
-    print(paste0(paste0("Could not find firstDay csv file, please confirm you have a csv file for that day. Format: <experiment>_Day_",firstDay),".csv"))
+    print(paste0("Could not find firstDay csv file, please confirm you have a csv file for that day. Format: <experiment>_Day_",firstDay,".csv"))
     return(-1)
   }
   print("Calculating Survival Percentage")
@@ -172,7 +172,7 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
     for(y in 2:length(qvalue))
     {
       Sn <-CLSCalc((as.numeric(sortedDt[y,z])-as.numeric(sortedDt[1,z])), measureInterval, dt.df[1,z] )
-      #print(paste0(paste(paste0("Day ",paste(paste0(sortedDt[y,1],":"),Sn)),"based on:"),dt.df[1,z]))
+      #print(paste0("Day ",sortedDt[y,1],": ",Sn," based on: ",dt.df[1,z]))
       survDt[y,z]<-format(round(Sn,2),nsmall=2)
     }
     write.csv(survDt,file="SurvivalPercentage.csv",row.names = FALSE)
@@ -210,7 +210,7 @@ SurvivalIntegral <- function(homedir=getwd(), fileName = "SurvivalPercentage.csv
       SI <- SI+((((ul.df[n,name])+ul.df[n-1,name])/2)*(ul.df[n,1]-ul.df[n-1,1]))
       #print(SI)
     }
-    #print(paste0(paste0(paste0("Final SI for ",name),":"),SI))
+    #print(paste0("Final SI for ",name,":",SI))
     SI.mat[count]<-SI
     count <- count + 1
   }

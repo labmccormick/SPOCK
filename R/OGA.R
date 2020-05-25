@@ -70,7 +70,7 @@ create.plots<-function(locationofRAW=homedir)
   print("Creating Plots")
   if(!dir.exists(locationofRAW))
   {
-    print(paste0(paste0("Directory: ",locationofRAW),"is unavailable, please check filesystem for correct path."))
+    print(paste0("Directory: ",locationofRAW,"is unavailable, please check filesystem for correct path."))
     return(-1)
   }
   setwd(locationofRAW) #point function to directory containing raw output files from OGA function, these are used to plot
@@ -369,7 +369,7 @@ OGA <-
     errorFound <- FALSE
     if(!dir.exists(homedir))
     {
-      print(paste0(paste0("Directory: ",homedir),"not found. Confirm it exists and you have permission to access it."))
+      print(paste0("Directory: ",homedir,"not found. Confirm it exists and you have permission to access it."))
       errorFound<-TRUE
     }
     setwd(homedir)#set directory to homedir
