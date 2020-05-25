@@ -361,7 +361,8 @@ OGA <-
            LimitNoGrowth=0.9,
            statsDT = TRUE,
            bacteria = 45,
-           laglimit=0.1)
+           laglimit=0.1,
+           rmflagged=TRUE)
     #OGA declaration
     # Begin
   {
