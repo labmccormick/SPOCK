@@ -372,7 +372,7 @@ OGA <-
       print(paste0(paste0("Directory: ",homedir),"not found. Confirm it exists and you have permission to access it."))
       errorFound<-TRUE
     }
-
+    setwd(homedir)#set directory to homedir
     if(!file.exists(laddername))
     {
       print(paste0("Could not find ladder file: ",laddername))
@@ -420,7 +420,7 @@ OGA <-
     ################################################################### Dusting and mopping
     #Housekeeping / setting up directory environment
 
-    setwd(homedir)#set directory to homedir
+
     results <-
       paste0(homedir, "/Results")#create variable results which identifies the path for the results directory
     RAW <-
