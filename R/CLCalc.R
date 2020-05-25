@@ -21,7 +21,7 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
 {
   if(!dir.exists(resultspath))
   {
-    print(paste0(paste0("Directory: ", resultspath)," not found, confirm it exists and you have permission to access it."))
+    print(paste0("Directory: ", resultspath," not found, confirm it exists and you have permission to access it."))
     return(-1)
   }
   setwd(resultspath)                     #set directory to resultspath (location of raw results files)
