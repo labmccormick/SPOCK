@@ -41,6 +41,7 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
         This could mean the path specified isn't the one with generated results
         from OGA(), check that the path passed is correct. If the files are modified
         and the names are changed to exclude results- in the name you can ignore this warning.\n")
+  }
   empty_list <- vector(mode = "list", length = length(file_list))
   if(rmflagged)
   {
