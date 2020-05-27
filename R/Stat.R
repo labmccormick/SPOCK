@@ -1,6 +1,6 @@
-#stats takes raw results files and calculates the mean, SD, and SEM of all wells with the same name
-#This function will fail if RAW csv files from bioscreen (or other plate reader) contain periods in sample names
-#locationofresults = path of results folder
+# stats takes raw results files and calculates the mean, SD, and SEM of all wells with the same name
+# This function will fail if RAW csv files from bioscreen (or other plate reader) contain periods in the sample names
+# locationofresults = path of results folder
 #####################################################################################################
 #####################################################################################################
 #' statsDT
@@ -8,7 +8,7 @@
 #' statsDT takes raw results files and calculates the mean, SD and SEM of all wells with the same name.
 #'
 #' @param locationofresults path to the results of OGA analysis.
-#' @param rmflagged This determines if flagged wells are removed from statistics. default=TRUE
+#' @param rmflagged This determines whether flagged wells are removed from statistics. default=TRUE
 statsDT <- function(locationofresults="Results", rmflagged=TRUE)
 {
   if(!dir.exists(locationofresults))
@@ -19,18 +19,18 @@ statsDT <- function(locationofresults="Results", rmflagged=TRUE)
 
   setwd(locationofresults)
   stats <-
-    paste0(locationofresults, "/Replicate_Stats")#create variable replicate_states which identifies the path for the replicate_stats directory
+    paste0(locationofresults, "/Replicate_Stats")# create variable replicate_states which identifies the path for the replicate_stats directory
 
-  dir.create(paste0("Replicate_Stats"), showWarnings = FALSE) #creates directory replicate_states within current working directory
+  dir.create(paste0("Replicate_Stats"), showWarnings = FALSE) # creates directory replicate_states within current working directory
   file_list_tostat <-
-    list.files(pattern = "*.csv") #create list of all result outputfiles from OGA in dir results
+    list.files(pattern = "*.csv") # create list of all result outputfiles from OGA in dir results
   print ("Calculating Statistics")
   for (analysis in 1:length(file_list_tostat))
   {
     #####################################################################################################
-    #Housekeeping
+    # Housekeeping
     dfg<-as.data.frame(read.csv(file_list_tostat[analysis], row.names = 1, stringsAsFactors=FALSE))
-    if(rmflagged) #remove flagged wells if =TRUE
+    if(rmflagged) # remove flagged wells if =TRUE
     {
     dfg<-dfg[which(dfg[7,]!="No Growth" & dfg[8,]!="Unexpected Growth" & dfg[10,]!="CONTAMINATION")]
     }
@@ -43,48 +43,48 @@ statsDT <- function(locationofresults="Results", rmflagged=TRUE)
     repnum<-0
     for (l in 1:length(colnames(dfg)))
     {
-      name[l]<-sub("\\..*", "", colnames(dfg)[1]) #take name of first SAMPLE and remove R inserted .# values
-      reps<-grep(paste0(name[l], "$"), dfg[11,]) #find all SAMPLES with same name as column 1
+      name[l]<-sub("\\..*", "", colnames(dfg)[1]) # take name of first SAMPLE and remove R inserted .# values
+      reps<-grep(paste0(name[l], "$"), dfg[11,]) # find all SAMPLES with same name as column 1
       repnum[l]<-length(reps)
       dtval<-(as.numeric(dfg[1,reps]))
       dtval[is.na(dtval)]<-0
       dtval[is.infinite(dtval)]<-0
       if(length(dtval)>0)
       {
-        average[l]<-mean(as.numeric(dtval)) #average these columns doubling time
-        sd[l]<-sd(as.numeric(dfg[1,reps])) #find SD of these columns doubling time
-        se[l]<-(sd[l]/sqrt(length(reps))) #find SEM of these columns doubling time
+        average[l]<-mean(as.numeric(dtval)) # average these columns doubling time
+        sd[l]<-sd(as.numeric(dfg[1,reps])) # find SD of these columns doubling time
+        se[l]<-(sd[l]/sqrt(length(reps))) # find SEM of these columns doubling time
       }else
       {
         average[l]<-NA
         sd[l]<-NA
         se[l]<-NA
       }
-        if(dim(dfg)[2]>length(reps)) #remove SAMPLE replicate columns from further analysis
+        if(dim(dfg)[2]>length(reps)) # remove SAMPLE replicate columns from further analysis
         {
           dfg<-as.data.frame(dfg[-reps])
         }
         else
         {
-          dfg<-0 #if all columns have been analyzed stop
+          dfg<-0 # if all columns have been analyzed, stop
           break
         }
 
     }
-    avdataout<-as.data.frame(cbind(repnum,average,sd,se)) #create dataframe and store stats here
+    avdataout<-as.data.frame(cbind(repnum,average,sd,se)) # create dataframe and store stats here
     colnames(avdataout)[1]<-"Replicates"
     rownames(avdataout)<-name
-    write.csv (avdataout, file.path(stats, file = paste0(sub(".csv", "", file_list_tostat[analysis]), "averagedresults.csv"))) #write out dataframe.csv to replicate_stats dir
+    write.csv (avdataout, file.path(stats, file = paste0(sub(".csv", "", file_list_tostat[analysis]), "averagedresults.csv"))) # write out dataframe.csv to replicate_stats dir
     rm(dfg,se,sd,average,repnum)
   }
-  setwd("..") #setwd to dir one level up
+  setwd("..") # setwd to dir one level up
   }
 
 
 ############################################################################# CLS STATS CALCULATION
-#stats takes Survival Percentage and Survival Integral files and calculates the mean, SD, and SEM of all wells with the same name
-#This function will fail if RAW csv files from bioscreen (or other plate reader) contain periods in sample names
-#locationofresults = path of results folder
+# stats takes Survival Percentage and Survival Integral files and calculates the mean, SD, and SEM of all wells with the same name
+# This function will fail if RAW csv files from bioscreen (or other plate reader) contain periods in sample names
+# locationofresults = path of results folder
 #####################################################################################################
 
 #' statsCLS
@@ -112,8 +112,8 @@ statsCLS <- function()
   si[lngth+1,]<-sub("\\..*", "", si[lngth+1,])
   for (l in 1:length(colnames(si)))
   {
-    name[l]<-sub("\\..*", "", colnames(si)[1]) #take name of first SAMPLE and remove R inserted .# values
-    reps<-grep(paste0(name[l], "$"), si[lngth+1,]) #find all SAMPLES with same name as column 1
+    name[l]<-sub("\\..*", "", colnames(si)[1]) # take name of first SAMPLE and remove R inserted .# values
+    reps<-grep(paste0(name[l], "$"), si[lngth+1,]) # find all SAMPLES with same name as column 1
     repnum[l]<-length(reps)
     dtval<-(as.numeric(si[1,reps]))
     dtval[is.na(dtval)]<-0
@@ -123,14 +123,14 @@ statsCLS <- function()
       for(times in 1:lngth)
       {
         dtval<-si[times,reps]
-        average[[times]][l]<-mean(as.numeric(dtval)) #average these columns doubling time
-        sd[[times]][l]<-sd(as.numeric(dtval)) #find SD of these columns doubling time
-        se[[times]][l]<-(sd[[times]][l]/sqrt(length(reps))) #find SEM of these columns doubling time
+        average[[times]][l]<-mean(as.numeric(dtval)) # average these columns doubling time
+        sd[[times]][l]<-sd(as.numeric(dtval)) # find SD of these columns doubling time
+        se[[times]][l]<-(sd[[times]][l]/sqrt(length(reps))) # find SEM of these columns doubling time
       }
-      if(dim(si)[2]>length(reps)) #remove SAMPLE replicate columns from further analysis
+      if(dim(si)[2]>length(reps)) # remove SAMPLE replicate columns from further analysis
       {si<-si[-reps]
       }else{
-        si<-0 #if all columns have been analyzed stop
+        si<-0 # if all columns have been analyzed stop
         break}
     }
   }
@@ -149,10 +149,10 @@ statsCLS <- function()
     titles[xy[3]]<-paste(title[binding],"SE")
     if(exists("avdataout"))
     {
-      avdataout<-as.data.frame(cbind(avdataout,average[x:xn],sd[x:xn],se[x:xn])) #create dataframe and store stats here
+      avdataout<-as.data.frame(cbind(avdataout,average[x:xn],sd[x:xn],se[x:xn])) # create dataframe and store stats here
     } else
     {
-      avdataout<-as.data.frame(cbind(average[x:xn],sd[x:xn],se[x:xn])) #create dataframe and store stats here
+      avdataout<-as.data.frame(cbind(average[x:xn],sd[x:xn],se[x:xn])) # create dataframe and store stats here
     }
 
   }
@@ -164,7 +164,7 @@ statsCLS <- function()
   avdataout<-cbind(repnum,avdataout)
   colnames(avdataout)[1]<-"Replicates"
   View(avdataout)
-  write.csv (avdataout, "CLSstats.csv") #write out dataframe.csv to replicate_stats dir
+  write.csv (avdataout, "CLSstats.csv") # write out dataframe.csv to replicate_stats dir
   rm(avdataout)
 }
 
