@@ -763,7 +763,7 @@ OGA <-
               #if there was a calibration ladder
             {
               y<-signal::polyval(pf, y)  #use polyval to calculate adjusted values of y
-              print(highest)
+
               for (interpol in 1:length(y))
               {
                 if(y[interpol]>highest) #set any values greater than highest allowed to highest value allowed
