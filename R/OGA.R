@@ -361,7 +361,8 @@ OGA <-
            LimitNoGrowth=0.9,
            statsDT = TRUE,
            bacteria = 45,
-           laglimit=0.1)
+           laglimit=0.1,
+           rmflagged=TRUE)
     #OGA declaration
     # Begin
   {
@@ -373,11 +374,14 @@ OGA <-
       errorFound<-TRUE
     }
     setwd(homedir)#set directory to homedir
+    if(ladder)
+    {
     if(!file.exists(laddername))
     {
       print(paste0("Could not find ladder file: ",laddername))
       print("Confirm that this file is in the working directory or specify a different file with laddername=<file>")
       errorFound <- TRUE
+    }
     }
     if(autoinput)
     {
@@ -873,6 +877,10 @@ OGA <-
               #if there wasn't a calibration ladder, ycorrected should be zero (this tells create.plot to skip plotting corrected values)
             { ycorrected<-numeric(length(ymblk))
             }
+            if (blank == FALSE)
+            {
+              ypre<-numeric(length(ypre))
+            }
               toplot <- as.data.frame(matrix(0, dim(truewells)[1], 8))
               colnames(toplot)[1] <- "x"
               colnames(toplot)[2] <- "ypre" #RAW y values
@@ -949,7 +957,7 @@ OGA <-
 
     if(statsDT)
     {
-      statsDT(results,LimitNoGrowth)
+      statsDT(results,rmflagged)
     }
 
     #####################################################################################################
