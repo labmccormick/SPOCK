@@ -5,9 +5,9 @@
 #'
 #' @param firstDay Specify the first day of measurements, default=1
 #' @param resultspath System path where the results are stored, default=current directory
-#' @param rmflagged This determines if flagged wells are removed from CLS statistics. default=TRUE
+#' @param rmflagged This determines if flagged wells are removed from CLS statistics, default=TRUE
 #' @param statsCLS Should the code run statsCLS on the CLS results (TRUE/FALSE), default=TRUE
-#' @param measureInterval Interval in minutes for each OD measurement default=15
+#' @param measureInterval Interval in minutes for each OD measurement, default=15
 
 SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, statsCLS=TRUE, measureInterval=15)
 {
@@ -16,10 +16,10 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
     print(paste0("Directory: ", resultspath," not found, confirm it exists and you have permission to access it."))
     return(-1)
   }
-  setwd(resultspath)                                              #set directory to resultspath (location of raw results files)
-  survivalanalysis <-paste0(getwd(), "/Survivalanalysis")         #create survivalanalysis which identifies the path for the survival analysis dir
-  dir.create(paste0("Survivalanalysis"), showWarnings = FALSE)    #creates directory Survivalanalysis within current working directory
-  homedir<-RAWpath<-survivalanalysis                              #passes homedir and RAWpath to SurvivalPercentage and SurvivalIntegral
+  setwd(resultspath)                                              # set directory to resultspath (location of raw results files)
+  survivalanalysis <-paste0(getwd(), "/Survivalanalysis")         # create survivalanalysis which identifies the path for the survival analysis dir
+  dir.create(paste0("Survivalanalysis"), showWarnings = FALSE)    # creates directory Survivalanalysis within current working directory
+  homedir<-RAWpath<-survivalanalysis                              # passes homedir and RAWpath to SurvivalPercentage and SurvivalIntegral
   file_list <-
     list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*.csv")
   if(length(file_list)==0)
@@ -31,8 +31,8 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
   {
     cat("WARNING: No csv files of the format results-<experiment>_Day_##.csv.
         This could mean the path specified isn't the one with generated results
-        from OGA(), check that the path passed is correct. If the files are modified
-        and the names are changed to exclude results- in the name you can ignore this warning.\n")
+        from OGA(); check that the path passed is correct. If the files are modified
+        and the names are changed to exclude results- in the name, you can ignore this warning.\n")
   }
   empty_list <- vector(mode = "list", length = length(file_list))
   if(rmflagged)
@@ -84,9 +84,9 @@ CLSCalc <- function(delta, measureInterval=15, doubleTime = 90*60)
 #' SurvivalPercentage
 #'
 #' This function computes percentage of cells still alive. This function looks for files
-#' that have the filename of the syntax <experiment>_Day_###.csv where <experiment> can be
+#' that have the filename of the syntax <experiment>_Day_###.csv , where <experiment> can be
 #' any unique ID to define the experiment, _Day_ is a marker to identify when the day is
-#' going to be specified and ### is the actual day of measuring.
+#' going to be specified and ### is the actual day that growth rate measurements were started.
 #'
 #' @param RAWpath path where the raw data files are located. Default = current working directory
 #' @param firstDay First day of measurements. Default = 1
@@ -102,7 +102,7 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
   }
   setwd(RAWpath)
   file_list <-
-    list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*.csv") #list all files in current working directory with extension.csv and Day notation
+    list.files(pattern = "[[:alnum:]]*_Day_[[:digit:]]*.csv") # list all files in current working directory with extension.csv and Day notation
 
   if(length(file_list)==0)
   {
@@ -113,8 +113,8 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
   {
     cat("WARNING: No csv files of the format results-<experiment>_Day_##.csv.
          This could mean the path specified isn't the one with generated results
-         from OGA(), check that the path passed is correct. If the files are modified
-        and the names are changed to exclude results- in the name you can ignore this warning.\n")
+         from OGA(); check that the path passed is correct. If the files are modified
+        and the names are changed to exclude results- in the name, you can ignore this warning.\n")
 
   }
   if(length(grep(pattern=paste0("*",firstDay,".csv"),file_list))==0) {
@@ -123,12 +123,12 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
   }
   print("Calculating Survival Percentage")
   for (i in 1:length (file_list))
-    #loop 1:x total number of CSV files in directory
+    # loop 1:x total number of CSV files in directory
   {
-    assign(paste0(sub('.csv', '', basename(file_list[i]))), read.csv(file_list[i])) #read .csv into dataframe with the same name as original csv without extension.csv
+    assign(paste0(sub('.csv', '', basename(file_list[i]))), read.csv(file_list[i])) # read .csv into dataframe with the same name as original csv without extension.csv
   }
   dfs <-
-    Filter(f = function(x) is(x, "data.frame"), mget(ls(pattern="_Day_"))) #create nested list of all dataframes
+    Filter(f = function(x) is(x, "data.frame"), mget(ls(pattern="_Day_"))) # create nested list of all dataframes
   # This creates a data frame that specifically holds the upper limit(ul.df) and doubling time(dt.df)
   firstDaygrep = paste0("Day_",firstDay)
 
