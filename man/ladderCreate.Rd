@@ -12,7 +12,7 @@ ladderCreate(laddername = "ladder.csv", repladder = 3)
 \item{repladder}{number of technical replicates in your calibration ladder}
 }
 \value{
-Returns a calibration ladder for OGA() analysis.
+Returns a calibration ladder for OGA() analysis. WASSUP
 }
 \description{
 Function to create calibration ladder used by OGA.
