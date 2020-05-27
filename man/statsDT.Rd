@@ -4,12 +4,10 @@
 \alias{statsDT}
 \title{statsDT}
 \usage{
-statsDT(locationofresults = "Results", LimitNoGrowth = 0.9, rmflagged = TRUE)
+statsDT(locationofresults = "Results", rmflagged = TRUE)
 }
 \arguments{
 \item{locationofresults}{path to the results of OGA analysis.}
-
-\item{LimitNoGrowth}{Parameter specifying the cutoff value for determining growth. default=0.9}
 
 \item{rmflagged}{This determines if flagged wells are removed from statistics. default=TRUE}
 }

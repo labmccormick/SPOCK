@@ -103,34 +103,34 @@ create.plots<-function(locationofRAW=getwd())
     ggplot() +
       geom_line(data = toplot,
                 aes(
-                  x = toplot$x,
-                  y = toplot$y,
+                  x = x,
+                  y = y,
                   colour = "darkred"
                 ),
                 size = 2) +
       #PLOT growth curve after BLANK subtraction
       geom_line(data = toplot,
                 aes(
-                  x = toplot$x,
-                  y = toplot$ypre,
+                  x = x,
+                  y = ypre,
                   colour = "darkgreen"
                 ),
                 size = 2) +
       #PLOT growth curve after filtering
       geom_line(data = toplot,
                 aes(
-                  x = toplot$x,
-                  y = toplot$yfiltered,
+                  x = x,
+                  y = yfiltered,
                   colour = "darkblue"
                 ),
                 size = 2) +
       #PLOT upperlimit of exponential growth as defined by OGA
       geom_point(data = toplot,
-                 aes(x = ul, y = toplot$yfiltered[ul]),
+                 aes(x = ul, y = yfiltered[ul]),
                  size = 3) +
       #PLOT lowerlimit of exponential growth as defined by OGA
       geom_point(data = toplot,
-                 aes(x = low, y = toplot$yfiltered[low]),
+                 aes(x = low, y = yfiltered[low]),
                  size = 3,
                  colour = "red") +
       #Assign names to plot legend
@@ -158,42 +158,42 @@ create.plots<-function(locationofRAW=getwd())
    ggplot() +
     geom_line(data = toplot,
               aes(
-                x = toplot$x,
-                y = toplot$y,
+                x = x,
+                y = y,
                 colour = "darkred"
               ),
               size = 2) +
     #PLOT growth curve after BLANK subtraction
     geom_line(data = toplot,
               aes(
-                x = toplot$x,
-                y = toplot$ypre,
+                x = x,
+                y = ypre,
                 colour = "darkgreen"
               ),
               size = 2) +
      #PLOT growth curve after filtering
     geom_line(data = toplot,
               aes(
-                x = toplot$x,
-                y = toplot$yfiltered,
+                x = x,
+                y = yfiltered,
                 colour = "darkblue"
               ),
               size = 2) +
      #PLOT growth curve after OD correction
        geom_line(data = toplot,
                  aes(
-                   x = toplot$x,
-                   y = toplot$ycorrected,
+                   x = x,
+                   y = ycorrected,
                    colour = "purple"
                  ),
                  size = 2) +
      #PLOT upperlimit of exponential growth as defined by OGA
     geom_point(data = toplot,
-               aes(x = ul, y = toplot$yfiltered[ul]),
+               aes(x = ul, y = yfiltered[ul]),
                size = 3) +
      #PLOT lowerlimit of exponential growth as defined by OGA
     geom_point(data = toplot,
-               aes(x = low, y = toplot$yfiltered[low]),
+               aes(x = low, y = yfiltered[low]),
                size = 3,
                colour = "red") +
      #Assign names to plot legend
@@ -262,6 +262,7 @@ create.plots<-function(locationofRAW=getwd())
 #' @param statsDT BOOL parameter, if TRUE OGA passes results files to statsDT(TRUE/FALSE)
 #' @param bacteria Limit below which doubling-time is marked as bacterial contamination. If measuring bacterial growth set = 0.5.
 #' @param laglimit OD above which marks the end of the lag-phase.
+#' @param rmflagged This determines if flagged wells are removed from statistics. default=TRUE
 
 
 

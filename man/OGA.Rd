@@ -22,7 +22,8 @@ OGA(
   LimitNoGrowth = 0.9,
   statsDT = TRUE,
   bacteria = 45,
-  laglimit = 0.1
+  laglimit = 0.1,
+  rmflagged = TRUE
 )
 }
 \arguments{
@@ -63,6 +64,8 @@ to this parameter.}
 \item{bacteria}{Limit below which doubling-time is marked as bacterial contamination. If measuring bacterial growth set = 0.5.}
 
 \item{laglimit}{OD above which marks the end of the lag-phase.}
+
+\item{rmflagged}{This determines if flagged wells are removed from statistics. default=TRUE}
 }
 \description{
 OGA calculates doubling times by subtracting blank wells, smoothing high frequency noise by a

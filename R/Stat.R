@@ -1,7 +1,6 @@
 #stats takes raw results files and calculates the mean, SD, and SEM of all wells with the same name
 #This function will fail if RAW csv files from bioscreen (or other plate reader) contain periods in sample names
 #locationofresults = path of results folder
-#LimitNoGrowth = Limit below which a well is defined as having no growth
 #####################################################################################################
 #####################################################################################################
 #' statsDT
@@ -9,7 +8,6 @@
 #' statsDT takes raw results files and calculates the mean, SD and SEM of all wells with the same name.
 #'
 #' @param locationofresults path to the results of OGA analysis.
-#' @param LimitNoGrowth Parameter specifying the cutoff value for determining growth. default=0.9
 #' @param rmflagged This determines if flagged wells are removed from statistics. default=TRUE
 statsDT <- function(locationofresults="Results", rmflagged=TRUE)
 {
@@ -87,7 +85,6 @@ statsDT <- function(locationofresults="Results", rmflagged=TRUE)
 #stats takes Survival Percentage and Survival Integral files and calculates the mean, SD, and SEM of all wells with the same name
 #This function will fail if RAW csv files from bioscreen (or other plate reader) contain periods in sample names
 #locationofresults = path of results folder
-#LimitNoGrowth = Limit below which a well is defined as having no growth
 #####################################################################################################
 
 #' statsCLS
