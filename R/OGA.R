@@ -374,11 +374,14 @@ OGA <-
       errorFound<-TRUE
     }
     setwd(homedir)#set directory to homedir
+    if(ladder)
+    {
     if(!file.exists(laddername))
     {
       print(paste0("Could not find ladder file: ",laddername))
       print("Confirm that this file is in the working directory or specify a different file with laddername=<file>")
       errorFound <- TRUE
+    }
     }
     if(autoinput)
     {
@@ -760,7 +763,7 @@ OGA <-
               #if there was a calibration ladder
             {
               y<-signal::polyval(pf, y)  #use polyval to calculate adjusted values of y
-
+              print(highest)
               for (interpol in 1:length(y))
               {
                 if(y[interpol]>highest) #set any values greater than highest allowed to highest value allowed
@@ -873,6 +876,10 @@ OGA <-
             if (ladder == FALSE)
               #if there wasn't a calibration ladder, ycorrected should be zero (this tells create.plot to skip plotting corrected values)
             { ycorrected<-numeric(length(ymblk))
+            }
+            if (blank == FALSE)
+            {
+              ypre<-numeric(length(ypre))
             }
               toplot <- as.data.frame(matrix(0, dim(truewells)[1], 8))
               colnames(toplot)[1] <- "x"
