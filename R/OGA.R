@@ -95,9 +95,14 @@ create.plots<-function(locationofRAW=getwd())
     setTxtProgressBar(pb, plot)
 
   toplot<-read.csv(file_list_toplot[plot]) # read .csv from dir RAW into table for analysis
+  ulx<-(toplot[1,6]*(measureInterval/60)) # define the upper limit as picked by OGA x val
+  lowx<-(toplot[1,7]*(measureInterval/60)) # define the lower limit as picked by OGA x val
   ul<-toplot[1,6] # define the upper limit as picked by OGA
   low<-toplot[1,7] # define the lower limit as picked by OGA
-  rval<-toplot[1,8] # set rval equal to Rvalue as determined by OGA
+
+  rval<-round(toplot[1,8], digits=4) # set rval equal to Rvalue as determined by OGA
+  measureInterval<-toplot[1,9]
+  toplot$x<-(toplot$x*(measureInterval/60))
   # if data was ladder calibrated toplot$ycorrected>0 ; otherwise skip this step in plotting
   if(mean(toplot$ycorrected)==0)
   {
@@ -127,17 +132,18 @@ create.plots<-function(locationofRAW=getwd())
                 size = 2) +
       # PLOT upperlimit of exponential growth as defined by OGA
       geom_point(data = toplot,
-                 aes(x = ul, y = yfiltered[ul]),
-                 size = 3) +
+                 aes(x = ulx, y = yfiltered[ul]),
+                 size = 3,
+                 colour = "red") +
       # PLOT lowerlimit of exponential growth as defined by OGA
       geom_point(data = toplot,
-                 aes(x = low, y = yfiltered[low]),
+                 aes(x = lowx, y = yfiltered[low]),
                  size = 3,
                  colour = "red") +
       # Assign names to plot legend
 
       scale_color_discrete(
-        name = paste("Growth Curves. Rsquared of", rval, "between points"),
+        name = paste("Growth Curves. R^2=", rval, "between points"),
         labels = c(
           "Filtered",
           "Before removing blank",
@@ -148,9 +154,16 @@ create.plots<-function(locationofRAW=getwd())
       # Assign names to axes
       labs(
         title = paste(basename(file_list_toplot[plot]), "Transformed Curves"),
-        x = "Time",
+        x = "Time (Hours)",
         y = "O.D 600 nm"
-      )
+      ) +
+      theme(axis.title.y = element_text(size = rel(1.8))) +
+      theme(axis.title.x = element_text(size = rel(1.8))) +
+      theme(legend.title = element_text(colour="black", size=10,
+                                        face="bold")) +
+      theme(legend.text = element_text(colour="black", size=10,
+                                       face="bold")) +
+      theme(plot.title = element_text(hjust = 0.5))
     # Save as png plot for respective .csv RAW file
 
   }else
@@ -190,17 +203,18 @@ create.plots<-function(locationofRAW=getwd())
                  size = 2) +
      # PLOT upperlimit of exponential growth as defined by OGA
     geom_point(data = toplot,
-               aes(x = ul, y = yfiltered[ul]),
-               size = 3) +
+               aes(x = ulx, y = yfiltered[ul]),
+               size = 3,
+               colour = "red") +
      # PLOT lowerlimit of exponential growth as defined by OGA
     geom_point(data = toplot,
-               aes(x = low, y = yfiltered[low]),
+               aes(x = lowx, y = yfiltered[low]),
                size = 3,
                colour = "red") +
      # Assign names to plot legend
 
       scale_color_discrete(
-      name = paste("Growth Curves. Rsquared of", rval, "between points"),
+      name = paste("Growth Curves. R^2=", rval, "between points"),
       labels = c(
       "Filtered",
       "Before removing blank",
@@ -212,9 +226,16 @@ create.plots<-function(locationofRAW=getwd())
      # Assign names to axes
     labs(
       title = paste(basename(file_list_toplot[plot]), "Transformed Curves"),
-      x = "Time",
+      x = "Time (Hours)",
       y = "O.D 600 nm"
-    )
+    ) +
+      theme(axis.title.y = element_text(size = rel(1.8))) +
+      theme(axis.title.x = element_text(size = rel(1.8))) +
+      theme(legend.title = element_text(colour="black", size=10,
+                                          face="bold")) +
+      theme(legend.text = element_text(colour="black", size=10,
+                                           face="bold"))+
+        theme(plot.title = element_text(hjust = 0.5))
    # Save as png plot for respective .csv RAW file
   }
 
@@ -884,7 +905,7 @@ OGA <-
             {
               ypre<-numeric(length(ypre))
             }
-              toplot <- as.data.frame(matrix(0, dim(truewells)[1], 8))
+              toplot <- as.data.frame(matrix(0, dim(truewells)[1], 9))
               colnames(toplot)[1] <- "x"
               colnames(toplot)[2] <- "ypre" # RAW y values
               colnames(toplot)[3] <- "y" # RAW y values minus blank
@@ -901,6 +922,7 @@ OGA <-
               toplot[1,6] <-ul
               toplot[1,7] <-low
               toplot[1,8] <-rval
+              toplot[1,9] <-measureInterval
               write.csv (toplot, file.path(RAW, file = paste0(names(dfs)[[dfnum]], names(truewells)[ii], "-raw.csv")),row.names = FALSE)
 
             rm(mirroredy, ycorrected, filteredmirroedy, yfilterd, ul, ymblk, y)
