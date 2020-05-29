@@ -15,7 +15,7 @@ SurvivalPercentage(RAWpath = getwd(), firstDay = 1, measureInterval = 15)
 }
 \description{
 This function computes percentage of cells still alive. This function looks for files
-that have the filename of the syntax <experiment>_Day_###.csv where <experiment> can be
+that have the filename of the syntax <experiment>_Day_###.csv , where <experiment> can be
 any unique ID to define the experiment, _Day_ is a marker to identify when the day is
-going to be specified and ### is the actual day of measuring.
+going to be specified and ### is the actual day that growth rate measurements were started.
 }

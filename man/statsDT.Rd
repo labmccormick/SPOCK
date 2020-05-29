@@ -9,7 +9,7 @@ statsDT(locationofresults = "Results", rmflagged = TRUE)
 \arguments{
 \item{locationofresults}{path to the results of OGA analysis.}
 
-\item{rmflagged}{This determines if flagged wells are removed from statistics. default=TRUE}
+\item{rmflagged}{This determines whether flagged wells are removed from statistics. default=TRUE}
 }
 \description{
 statsDT takes raw results files and calculates the mean, SD and SEM of all wells with the same name.

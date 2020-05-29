@@ -12,11 +12,11 @@ ladderCreate(laddername = "ladder.csv", repladder = 3)
 \item{repladder}{number of technical replicates in your calibration ladder}
 }
 \value{
-Returns a calibration ladder for OGA() analysis. WASSUP
+Returns a calibration ladder for OGA() analysis.
 }
 \description{
 Function to create calibration ladder used by OGA.
-The output of this function is a 3rd order polynomial which is the best fit of the data. This function expects to find a CSV of name
-ladder.csv (or user defined name) in the current working directory, this should
-be a user generated file. See Example file for format of ladder.csv
+The output of this function is a 3rd order polynomial which is the best fit of the data. This function expects to find a CSV file called
+ladder.csv (or user defined name) in the current working directory; this should
+be a user generated file. See included Example file for format of ladder.csv
 }

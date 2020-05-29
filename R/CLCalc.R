@@ -37,29 +37,29 @@ SurvivalCalc<- function(firstDay = 1, resultspath = getwd(), rmflagged=TRUE, sta
   empty_list <- vector(mode = "list", length = length(file_list))
   if(rmflagged)
   {
-  for (cleaning in 1:length(file_list))
-  {
-    df<-as.data.frame(read.csv(file_list[cleaning], row.names = 1, stringsAsFactors=FALSE))
-    empty_list[[cleaning]]<-which(df[7,]!="No Growth" & df[8,]!="Unexpected Growth" & df[10,]!="CONTAMINATION")
-    rm(df)
-  }
-  xh<-Reduce(intersect, empty_list)
-  for (cleaning in 1:length(file_list))
-  {
-    df<-as.data.frame(read.csv(file_list[cleaning], row.names = 1, stringsAsFactors=FALSE))
-    df<-df[,xh]
-    write.csv (df, file.path(survivalanalysis, file = paste0("results-flagged-wells-removed",file_list[cleaning])))
-    rm(df)
-  }
-  rm(xh, file_list, empty_list)
+    for (cleaning in 1:length(file_list))
+    {
+      df<-as.data.frame(read.csv(file_list[cleaning], row.names = 1, stringsAsFactors=FALSE))
+      empty_list[[cleaning]]<-which(df[7,]!="No Growth" & df[8,]!="Unexpected Growth" & df[10,]!="CONTAMINATION")
+      rm(df)
+    }
+    xh<-Reduce(intersect, empty_list)
+    for (cleaning in 1:length(file_list))
+    {
+      df<-as.data.frame(read.csv(file_list[cleaning], row.names = 1, stringsAsFactors=FALSE))
+      df<-df[,xh]
+      write.csv (df, file.path(survivalanalysis, file = paste0("results-flagged-wells-removed",file_list[cleaning])))
+      rm(df)
+    }
+    rm(xh, file_list, empty_list)
   }else
   {
     for (cleaning in 1:length(file_list))
-      {
-        df<-as.data.frame(read.csv(file_list[cleaning], row.names = 1, stringsAsFactors=FALSE))
-        write.csv (df, file.path(survivalanalysis, file = paste0("results-flagged-wells-NOT-removed",file_list[cleaning])))
-        rm(df)
-      }
+    {
+      df<-as.data.frame(read.csv(file_list[cleaning], row.names = 1, stringsAsFactors=FALSE))
+      write.csv (df, file.path(survivalanalysis, file = paste0("results-flagged-wells-NOT-removed",file_list[cleaning])))
+      rm(df)
+    }
   }
   SurvivalPercentage(RAWpath,firstDay,measureInterval)
   SurvivalIntegral(homedir, fileName = "SurvivalPercentage.csv")
@@ -132,21 +132,26 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
   # This creates a data frame that specifically holds the upper limit(ul.df) and doubling time(dt.df)
   firstDaygrep = paste0("Day_",firstDay)
 
-  ul.df <- data.frame()
+  fullDt <- ul.df <- data.frame()
   dt.df <- dfs[[grep(paste0(firstDaygrep,"$"),names(dfs))]][1,]
   qvalue <- c()
   strsplit(names(dfs[1]),"_")[[1]][2]
-  names(dfs[[1]])
 
   for(x in seq_along(dfs))
   {
     qvalue[x] <- as.numeric(gsub("([0-9]+).*$", "\\1", strsplit(names(dfs[x]),"_")[[1]][3]))
     ul.df <- rbind(ul.df,dfs[[x]][4,])
+    fullDt <- rbind(fullDt,dfs[[x]][1,])
   }
   # sortedDt is a sorted doubling time data frame so that the survival data frame is in a manner
   # that is age+1 is the next element in the data frame so solving the survival function
   # makes sense
   ul.df[,1] <- qvalue
+  fullDt[,1] <- qvalue
+  colnames(fullDt)[1]<-"Time"
+  fullDt <- fullDt[order(fullDt$Time),]
+  View(fullDt)
+  checkDoubleTimes(fullDt)
   colnames(ul.df)[1]<-"Time"
   sortedDt <- ul.df[order(ul.df$Time),]
   survDt <- sortedDt
@@ -200,9 +205,50 @@ SurvivalIntegral <- function(homedir=getwd(), fileName = "SurvivalPercentage.csv
   colnames(SI.df) <- names(ul.df)
   ul.df <- rbind(ul.df,SI.df)
   ul.df[length(ul.df[,1]),1] <- 0
-
   write.csv(ul.df,file="SurvivalIntegral.csv",row.names = FALSE)
-  View(ul.df)
+
+}
+
+#' checkDoubleTimes
+#'
+#' Calculate the area under the curve as determined by the survival percentage for an experiment.
+#'
+#' @param dt.df data frame with the doubling times that need to be checked for high variation
+#' @param acceptablePercentage What percentage either up or down that is acceptable in the computed difference between doubling times. default = 25%
+
+checkDoubleTimes <- function(dt.df,acceptablePercentage = 25)
+{
+  TimeDiff <- matrix("NoDiff",nrow = length(dt.df[,1])-1, ncol = 1)
+  for(l in 1:length(TimeDiff))
+  {
+    TimeDiff[l] <- paste0(dt.df$Time[l+1],"-",dt.df$Time[l])
+  }
+  results.df <- data.frame(TimeDiff)
+  print(typeof(results.df))
+  df.colnames <- matrix(colnames(dt.df), nrow = 1)
+
+  for(z in 2:length(dt.df[1,]))
+  {
+    results.matrix <- matrix(TRUE,nrow = length(dt.df[,1])-1, ncol = 1)
+    for(n in 2:length(dt.df[,1]))
+    {
+      #print(paste0("Calculating: ",dt.df[n,z],"Divided by ",dt.df[n-1,z]))
+      dtDiff <- dt.df[n,z]/dt.df[n-1,z]*100
+      #print(paste0("Results: ", dtDiff))
+      if((dtDiff > 100+acceptablePercentage) || (dtDiff < 100-acceptablePercentage))
+      {
+        results.matrix[n-1] = FALSE
+      }
+    }
+    newName <- df.colnames[z]
+    # print(newName)
+    # print(results.matrix)
+    results.df[newName] <- as.data.frame(results.matrix)
+    # print(results.df)
+    # Sys.sleep(10)
+  }
+  print(results.df)
+  print(typeof(results.df))
 
 }
 

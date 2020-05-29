@@ -27,23 +27,23 @@ OGA(
 )
 }
 \arguments{
-\item{autoinput}{BOOL parameter, if TRUE then automatically read in all .csv files in current WD for outgrowth
-analysis. These csv files are autoinputed into DFS, otherwise OGA expect to find a value for dfs.}
+\item{autoinput}{BOOL parameter, if TRUE then automatically read in all .csv files in current working directory for outgrowth
+analysis. These csv files are autoinput into data frames, otherwise OGA expects to find a value for data frames.}
 
-\item{nestdataframe}{if autoinput is FALSE then you instead need to pass a nested dataframe to analyze
+\item{nestdataframe}{if autoinput is FALSE, then instead you need to pass a nested dataframe to analyze
 to this parameter.}
 
-\item{homedir}{Home Directory= working directory containing RAW .csv files from plate reader in Example.csv format.}
+\item{homedir}{Home Directory= working directory containing RAW .csv files from plate reader, in Example.csv format.}
 
 \item{ladder}{BOOL parameter, if TRUE then OGA creates calibration ladder from laddername and calibrates RAW data.}
 
-\item{laddername}{Name of ladder.csv file (in same directory as RAW .csv files).}
+\item{laddername}{Name of ladder.csv file (in the same directory as RAW .csv files).}
 
 \item{repladder}{Number of technical replicates in ladder (see example).}
 
-\item{blank}{Do you have blanks (wells with no inoculum) in the csv files (TRUE/FALSE)}
+\item{blank}{Do you have blanks (wells with no inoculum and only media) in the csv files (TRUE/FALSE)}
 
-\item{blankname}{Name used for blank wells, this name is case sensitive and must match exactly with file.}
+\item{blankname}{Name used for blank wells, this name is case sensitive and must match exactly with the csv files.}
 
 \item{create.plot}{BOOL parameter, if TRUE then OGA passes RAW files to create.plots to produce plots? (TRUE/FALSE).}
 
@@ -59,17 +59,18 @@ to this parameter.}
 
 \item{LimitNoGrowth}{What is the OD limit to signal no growth detected/insufficient information for complete growth curve.}
 
-\item{statsDT}{BOOL parameter, if TRUE OGA passes results files to statsDT(TRUE/FALSE)}
+\item{statsDT}{BOOL parameter, if TRUE, OGA passes results files to statsDT(TRUE/FALSE)}
 
-\item{bacteria}{Limit below which doubling-time is marked as bacterial contamination. If measuring bacterial growth set = 0.5.}
+\item{bacteria}{Limit below which doubling-time is marked as bacterial contamination, for yeast. If measuring bacterial growth, set = 0.5.}
 
 \item{laglimit}{OD above which marks the end of the lag-phase.}
 
 \item{rmflagged}{This determines if flagged wells are removed from statistics. default=TRUE}
 }
 \description{
-OGA calculates doubling times by subtracting blank wells, smoothing high frequency noise by a
-Butterworth filter, picking the second limit by defining the inflection point of exponential
-growth as determined by the 1st derivative (diff) ul, and first limit by a heuristically
-defined slope change; the doubling time is then calculated between these points.
+OGA calculates doubling times. The process is to subtract  blank wells, then smooth high frequency noise using a
+Butterworth filter. OGA then identifies an interval of exponential growth. This is done by
+picking an end time for exponential growth by defining the inflection point of exponential
+growth as determined by the 1st derivative (diff) ul, and a beginning time for exponential growth by a heuristically
+defined minimum slope change. The doubling time is then calculated between these begining and end points.
 }
