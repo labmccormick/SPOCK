@@ -211,7 +211,9 @@ SurvivalIntegral <- function(homedir=getwd(), fileName = "SurvivalPercentage.csv
 
 #' checkDoubleTimes
 #'
-#' Calculate the area under the curve as determined by the survival percentage for an experiment.
+#' Check to determine whether doubling times between two days of experiments are within an
+#' acceptable range as specified by the user and build a table of all cases where that is
+#' either true or false.
 #'
 #' @param dt.df data frame with the doubling times that need to be checked for high variation
 #' @param acceptablePercentage What percentage either up or down that is acceptable in the computed difference between doubling times. default = 25%

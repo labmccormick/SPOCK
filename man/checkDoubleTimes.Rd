@@ -12,5 +12,7 @@ checkDoubleTimes(dt.df, acceptablePercentage = 25)
 \item{acceptablePercentage}{What percentage either up or down that is acceptable in the computed difference between doubling times. default = 25%}
 }
 \description{
-Calculate the area under the curve as determined by the survival percentage for an experiment.
+Check to determine whether doubling times between two days of experiments are within an
+acceptable range as specified by the user and build a table of all cases where that is
+either true or false.
 }
