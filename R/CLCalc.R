@@ -216,7 +216,7 @@ SurvivalIntegral <- function(homedir=getwd(), fileName = "SurvivalPercentage.csv
 #' either true or false.
 #'
 #' @param dt.df data frame with the doubling times that need to be checked for high variation
-#' @param acceptablePercentage What percentage either up or down that is acceptable in the computed difference between doubling times. default = 25%
+#' @param acceptablePercentage What percentage either up or down that is acceptable in the computed difference between doubling times. default = 25
 
 checkDoubleTimes <- function(dt.df,acceptablePercentage = 25)
 {

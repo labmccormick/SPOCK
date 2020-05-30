@@ -9,7 +9,7 @@ checkDoubleTimes(dt.df, acceptablePercentage = 25)
 \arguments{
 \item{dt.df}{data frame with the doubling times that need to be checked for high variation}
 
-\item{acceptablePercentage}{What percentage either up or down that is acceptable in the computed difference between doubling times. default = 25%}
+\item{acceptablePercentage}{What percentage either up or down that is acceptable in the computed difference between doubling times. default = 25}
 }
 \description{
 Check to determine whether doubling times between two days of experiments are within an
