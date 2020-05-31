@@ -150,7 +150,6 @@ SurvivalPercentage <- function(RAWpath = getwd(), firstDay = 1, measureInterval=
   fullDt[,1] <- qvalue
   colnames(fullDt)[1]<-"Time"
   fullDt <- fullDt[order(fullDt$Time),]
-  View(fullDt)
   checkDoubleTimes(fullDt)
   colnames(ul.df)[1]<-"Time"
   sortedDt <- ul.df[order(ul.df$Time),]
@@ -221,6 +220,12 @@ SurvivalIntegral <- function(homedir=getwd(), fileName = "SurvivalPercentage.csv
 checkDoubleTimes <- function(dt.df,acceptablePercentage = 25)
 {
   TimeDiff <- matrix("NoDiff",nrow = length(dt.df[,1])-1, ncol = 1)
+  if(!("Time" %in% names(dt.df)))
+  {
+    print("dataframe provided is missing the Time field for the doubling times, needed to continue.")
+    return(-1)
+  }
+
   for(l in 1:length(TimeDiff))
   {
     TimeDiff[l] <- paste0(dt.df$Time[l+1],"-",dt.df$Time[l])
