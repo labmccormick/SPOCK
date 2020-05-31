@@ -231,7 +231,6 @@ checkDoubleTimes <- function(dt.df,acceptablePercentage = 25)
     TimeDiff[l] <- paste0(dt.df$Time[l+1],"-",dt.df$Time[l])
   }
   results.df <- data.frame(TimeDiff)
-  print(typeof(results.df))
   df.colnames <- matrix(colnames(dt.df), nrow = 1)
 
   for(z in 2:length(dt.df[1,]))
@@ -254,9 +253,7 @@ checkDoubleTimes <- function(dt.df,acceptablePercentage = 25)
     # print(results.df)
     # Sys.sleep(10)
   }
-  print(results.df)
-  print(typeof(results.df))
-
+  write.csv(results.df,file="Double-time-delta.csv")
 }
 
 
