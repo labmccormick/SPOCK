@@ -15,51 +15,37 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+## Running SPOCK on sample data.
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+Sample data can be obtained from: https://github.com/labmccormick/SPOCKHelp .
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+Once you have pulled this data down and unzipped into a folder you can then test out some of SPOCK's features and reported in the paper (citation?). Below outlines how to run SPOCK using the subfolders of "RAW Data". For this example, all of the data was extracted to a folder "D:/Test/SPOCKHelp-master/RAW Data/".
 
-## Vignette Info
+1. Getting doubling times for various conditions
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+    To extract doubling times for one of the conditions listed in the subfolders, such  as the RAW_WT_DT. First set the working directory to that location and copy the appropriate ladder file over: for this example copy Ladders_Lab_Strain/CENPKA.csv and rename it to ladder.csv. Then simply run SPOCK::OGA(). This will create subfolders RAW and Results that will have a csv with the doubling times and plots of data collection. Since this folder doesn't contain any files with \_Day\_ syntax (see below for setting up data), it will not compute any survival data. 
+    
+```{r eval=FALSE}
+setwd("D:/Test/SPOCKHelp-master/RAW Data/RAW_WT_DT")
+SPOCK::OGA()
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+2. Computing Chronological lifespan data
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+    For this example the data is stored in the subfolder: RAW_OUTGROWTH_SI, so again we will start by setting our directory to that directory. For this experiment there is already an existing ladder file, so we will use this ladder file to run the code. This will generate individual results for each of the days in a file  results-(originalfilename).csv that will have the doubling times for each measured  strain for that day. Additionally this will do statistics for the doubling time for each  day and save that into the Replicate_Stats subfolder.
+```{r eval=FALSE}
+setwd("D:/Test/SPOCKHelp-master/RAW Data/RAW_OUTGROWTH_SI/")
+SPOCK::OGA(laddername = "w303aparentalladder.csv")
 ```
+    
+    
+## Setup for your own data
 
-Also a quote using `>`:
+1. File names for the Experiments
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+    SPOCK looks for files that have the following format to their names. <experiment>_Day_###.csv, where <experiment> can be any alphanumeric name for the experiment, followed by \_Day\_ (this syntax must be preserved), followed by the Day the measurements where made. Examples: EMSQ1909_Day_2.csv, EMSQ1909_Day_10.csv, EMSQ1909_Day_14.csv, w303a122020_Day_1.csv, w303a122020_Day_9.csv. The software will fail if it doesn't find the files in this general format so please take care in naming your experiment results. 
+
+2. Annotation and expected pattern of .csv files from plate reader
+
+    SPOCK expects input files to be from the Bioscreen C. These are .csv files of the following pattern, column 1 TIME of OD reading, columns 2-201 OD readings. Background wells should be annotated BLANK in lieu of the bioscreen naming (Well__),(or blankname="nameofblankwells" e.g. "YPD"), replicates should be named in lieu of their bioscreen column name (well__) with a unique name for each set of replicates(e.g. Well 101-105 are replicate1, rename these columns replicate1), this name must only contain alphanumeric characters. 
