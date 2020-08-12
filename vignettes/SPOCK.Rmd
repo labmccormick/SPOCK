@@ -19,14 +19,16 @@ knitr::opts_chunk$set(
 
 Sample data can be obtained from: https://github.com/labmccormick/SPOCKHelp .
 
-Once you have pulled this data down and unzipped into a folder you can then test out some of SPOCK's features and reported in the paper (citation?). Below outlines how to run SPOCK using the subfolders of "RAW Data". For this example, all of the data was extracted to a folder "D:/Test/SPOCKHelp-master/RAW Data/".
+Once you have pulled this data down and unzipped into a folder you can then test out some of SPOCK's features as reported in the paper (citation?). Below outlines how to run SPOCK using the subfolders of "RAW Data". For this example, all of the data was extracted to a folder "D:/Test/SPOCKHelp-master/RAW Data/".
 
 1. Getting doubling times for various conditions
 
-    To extract doubling times for one of the conditions listed in the subfolders, such  as the RAW_WT_DT. First set the working directory to that location and copy the appropriate ladder file over: for this example copy Ladders_Lab_Strain/CENPKA.csv and rename it to ladder.csv. Then simply run SPOCK::OGA(). This will create subfolders RAW and Results that will have a csv with the doubling times and plots of data collection. Since this folder doesn't contain any files with \_Day\_ syntax (see below for setting up data), it will not compute any survival data. 
+    To extract doubling times for one of the conditions listed in the subfolders, such  as the RAW\_WT_DT. First set the working directory to that location and copy the appropriate ladder file over: for this example copy Ladders_Lab_Strain/CENPKA.csv and rename it to ladder.csv. Then simply run SPOCK::OGA(). This will create subfolders RAW and Results that will have a csv with the doubling times and plots of data collection. 
     
 ```{r eval=FALSE}
-setwd("D:/Test/SPOCKHelp-master/RAW Data/RAW_WT_DT")
+##### Note this command will need to be pointed at the directory where you put the data
+##### This setwd is just an example and shouldn't be cut/pasted
+setwd("D:/Test/SPOCKHelp-master/RAW Data/RAW_WT_DT") 
 SPOCK::OGA()
 ```
 
@@ -35,6 +37,8 @@ SPOCK::OGA()
 
     For this example the data is stored in the subfolder: RAW_OUTGROWTH_SI, so again we will start by setting our directory to that directory. For this experiment there is already an existing ladder file, so we will use this ladder file to run the code. This will generate individual results for each of the days in a file  results-(originalfilename).csv that will have the doubling times for each measured  strain for that day. Additionally this will do statistics for the doubling time for each  day and save that into the Replicate_Stats subfolder.
 ```{r eval=FALSE}
+##### Note this command will need to be pointed at the directory where you put the data
+##### This setwd is just an example and shouldn't be cut/pasted
 setwd("D:/Test/SPOCKHelp-master/RAW Data/RAW_OUTGROWTH_SI/")
 SPOCK::OGA(laddername = "w303aparentalladder.csv")
 ```
