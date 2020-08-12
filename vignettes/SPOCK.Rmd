@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 Sample data can be obtained from: https://github.com/labmccormick/SPOCKHelp .
 
-Once you have pulled this data down and unzipped into a folder you can then test out some of SPOCK's features as reported in the paper (citation?). Below outlines how to run SPOCK using the subfolders of "RAW Data". For this example, all of the data was extracted to a folder "D:/Test/SPOCKHelp-master/RAW Data/".
+Once you have pulled this data down and unzipped into a folder you can then test out some of SPOCK's features as reported in the paper. Below outlines how to run SPOCK using the subfolders of "RAW Data". For this example, all of the data was extracted to a folder "D:/Test/SPOCKHelp-master/RAW Data/".
 
 1. Getting doubling times for various conditions
 
