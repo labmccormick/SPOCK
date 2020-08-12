@@ -23,7 +23,7 @@ Once you have pulled this data down and unzipped into a folder you can then test
 
 1. Getting doubling times for various conditions
 
-    To extract doubling times for one of the conditions listed in the subfolders, such  as the RAW\_WT_DT. First set the working directory to that location and copy the appropriate ladder file over: for this example copy Ladders_Lab_Strain/CENPKA.csv. Then simply run SPOCK::OGA(). This will create subfolders RAW and Results that will have a csv with the doubling times and plots of data collection. If you do not have a 
+    To extract doubling times for one of the conditions listed in the subfolders, such  as the RAW\_WT_DT. First set the working directory to that location and copy the appropriate ladder file over: for this example copy Ladders_Lab_Strain/CENPKA.csv. Then simply run SPOCK::OGA(). This will create subfolders RAW and Results that will have a csv with the doubling times and plots of data collection.
     
 ```{r eval=FALSE}
 ##### Note this command will need to be pointed at the directory where you put the data
