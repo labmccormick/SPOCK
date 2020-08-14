@@ -1,3 +1,13 @@
+# WilcoxonCLS looks at the data outputted from SurvivalCalc
+# And compares to strains to determine the p-value likelihood for a difference between strains
+#####################################################################################################
+#####################################################################################################
+
+#' wilcoxonCLS
+#'
+#' WilcoxonCLS looks at the data outputted from SurvivalCalc
+#' And compares to strains to determine the p-value likelihood for a difference between strains
+
 wilcoxonCLS<-function()
 {
 print(paste("All files in current working directory", getwd(), "with extension .csv will be opened. It is assumed that all such files are the output from SPOCK OGA()-->SurvivalCalc()-->StatsCLS() called CLSstats.csv, files from multiple independent CLS experiments may be opened at the same time." ))
