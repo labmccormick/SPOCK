@@ -44,6 +44,16 @@ SPOCK::OGA(laddername = "w303aparentalladder.csv")
 SPOCK::SurvivalCalc(resultspath = "Results",firstDay = 2)
 ```
     
+3. Computing Wilcoxon rank sum statistics of CLS data
+
+    Based on the results from the previous run (section 2 above), you should now find a subfolder Results/Survivalanalysis. In that directory there will be a file CLSstats.csv. This file will be the one you want to use to run the statistics. When you run this command you will be presented with a list of all available csv files in your current directory, make sure to type in CLSstats for the file to use. From that you will be prompted with what 2 strains you want to compare as well as a list of all available strains. From the 2 strains you pick it will give you a final p-value.
+    
+```{r eval=FALSE}
+##### Note this command will need to be pointed at the directory where you put the data
+##### This setwd is just an example and shouldn't be cut/pasted
+setwd("D:/Test/SPOCKHelp-master/RAW Data/RAW_OUTGROWTH_SI/Results/Survivalanalysis")
+SPOCK::wilcoxonCLS()
+```
     
 ## Setup for your own data
 
